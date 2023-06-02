@@ -141,8 +141,8 @@ primer semestre del 2023
             </child>
           </object>
           <packing>
-            <property name="x">112</property>
-            <property name="y">148</property>
+            <property name="x">125</property>
+            <property name="y">241</property>
           </packing>
         </child>
         <child>
@@ -160,7 +160,7 @@ JUGADOR LOCAL </property>
           </object>
           <packing>
             <property name="x">129</property>
-            <property name="y">69</property>
+            <property name="y">162</property>
           </packing>
         </child>
         <child>
@@ -186,7 +186,7 @@ JUGADOR LOCAL </property>
           </object>
           <packing>
             <property name="x">129</property>
-            <property name="y">187</property>
+            <property name="y">275</property>
           </packing>
         </child>
         <child>
@@ -195,8 +195,8 @@ JUGADOR LOCAL </property>
             <property name="can-focus">True</property>
           </object>
           <packing>
-            <property name="x">129</property>
-            <property name="y">263</property>
+            <property name="x">135</property>
+            <property name="y">354</property>
           </packing>
         </child>
         <child>
@@ -210,7 +210,7 @@ JUGADOR LOCAL </property>
           </object>
           <packing>
             <property name="x">177</property>
-            <property name="y">333</property>
+            <property name="y">396</property>
           </packing>
         </child>
         <child>
@@ -224,6 +224,73 @@ JUGADOR LOCAL </property>
           <packing>
             <property name="x">374</property>
             <property name="y">420</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <child>
+              <object class="GtkButton" id="Local">
+                <property name="label" translatable="yes">Local</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="Maquina">
+                <property name="label" translatable="yes">Maquina</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="Aleatori">
+                <property name="label" translatable="yes">Aleatorio</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="x">130</property>
+            <property name="y">123</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width-request">100</property>
+            <property name="height-request">80</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">    SELECCIONA 
+QUIEN EMPIEZA</property>
+            <attributes>
+              <attribute name="style" value="italic"/>
+              <attribute name="size" value="18432"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">134</property>
+            <property name="y">42</property>
           </packing>
         </child>
       </object>
