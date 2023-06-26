@@ -1,229 +1,331 @@
+/*
+ * IA.h
+ *
+ *  Created on: 22 jun. 2023
+ *      Author: lp1-2023
+ */
+
+#ifndef IA_H_
+#define IA_H_
 #include "Globales.h"
 #include "Funciones.h"
-#include "IA.h"
 
-int main (int argc, char *argv[])
-{
-	guint ret;
-	GError *error = NULL;
 
-	gtk_init (&argc, &argv);
+void tablerosPuntaje(int colorMaquina) {
 
-	builder = gtk_builder_new();
-	ret = gtk_builder_add_from_file(builder, direccion, &error);
-	if (ret == 0)
-		{
-			g_print("Error en la función gtk_builder_add_from_file:\n%s", error->message);
-			return 1;
+    // Rellena el tablero con ceros//edit
+    for (int i = 0; i < 16; i++) {
+        for (int j = 0; j < 16; j++) {
+            TPuntajeMaquina[i][j] = 0;
+        }
+    }
+
+//simepre sea para la pc
+    int TPuntajeMaquinaColor0[16][16] = {//edit
+            	    {120, 105, 90, 75, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            	    {105, 115, 100, 85, 70, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            	    {90, 100, 110, 95, 80, 65, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            	    {75, 85, 95, 105, 90, 75, 60, 45, 0, 0, 0, 0, 0, 0, 0, 0},
+            	    {65, 70, 80, 90, 100, 85, 70, 55, 40, 0, 0, 0, 0, 0, 0, 0},
+            	    {0, 60, 65, 75, 85, 95, 80, 65, 50, 35, 0, 0, 0, 0, 0, 0},
+            	    {0, 0, 55, 60, 70, 80, 90, 75, 60, 45, 30, 0, 0, 0, 0, 0},
+            	    {0, 0, 0, 50, 55, 65, 75, 85, 70, 55, 40, 25, 0, 0, 0, 0},
+            	    {0, 0, 0, 0, 45, 50, 60, 70, 80, 65, 50, 35, 20, 0, 0, 0},
+            	    {0, 0, 0, 0, 0, 35, 40, 50, 60, 70, 55, 40, 25, 15, 0, 0},
+            	    {0, 0, 0, 0, 0, 0, 30, 35, 45, 55, 65, 50, 35, 20, 10, 0},
+            	    {0, 0, 0, 0, 0, 0, 0, 25, 30, 40, 50, 60, 45, 30, 15, 5},
+            	    {0, 0, 0, 0, 0, 0, 0, 0, 20, 25, 35, 45, 55, 40, 25, 10},
+            	    {0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 20, 30, 40, 50, 35, 20},
+            	    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 15, 25, 35, 45, 30},
+            	    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 20, 30, 40}
+            	};
+//siempre sea para el usuario
+    int TPuntajeMaquinaColor1[16][16] = {//edit
+                    {40,  30,  20,  10,  5,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0},
+                    {30,  45,  35,  25,  15,  10,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0},
+                    {20,  35,  50,  40,  30,  20,  15,  0,   0,   0,   0,   0,   0,   0,   0,   0},
+                    {10,  25,  40,  55,  45,  35,  25,  20,  0,   0,   0,   0,   0,   0,   0,   0},
+                    {5,   15,  30,  45,  60,  50,  40,  30,  25,  0,   0,   0,   0,   0,   0,   0},
+                    {0,   10,  20,  35,  50,  65,  55,  45,  35,  30,  0,   0,   0,   0,   0,   0},
+                    {0,   0,   15,  25,  40,  55,  70,  60,  50,  40,  35,  0,   0,   0,   0,   0},
+                    {0,   0,   0,   20,  35,  50,  65,  80,  70,  60,  50,  45,  0,   0,   0,   0},
+                    {0,   0,   0,   0,   25,  40,  55,  70,  85,  75,  65,  55,  50,  0,   0,   0},
+                    {0,   0,   0,   0,   0,   30,  45,  60,  75,  90,  80,  70,  60,  55,  0,   0},
+                    {0,   0,   0,   0,   0,   0,   35,  50,  65,  80,  95,  85,  75,  65,  60,  0},
+                    {0,   0,   0,   0,   0,   0,   0,   40,  55,  70,  85,  100, 90,  80,  70,  65},
+                    {0,   0,   0,   0,   0,   0,   0,   0,   45,  60,  75,  90,  105, 95,  85,  75},
+                    {0,   0,   0,   0,   0,   0,   0,   0,   0,   50,  65,  80,  95,  110, 100, 90},
+                    {0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   55,  70,  85,  100, 115, 105},
+                    {0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   60,  75,   90, 105, 120}
+                };
+
+    switch (colorMaquina) {
+        case 1:
+            // Copia los valores al tablero principal
+            for (int i = 0; i < 16; i++) {
+                for (int j = 0; j < 16; j++) {
+                    TPuntajeMaquina[i][j] = TPuntajeMaquinaColor0[i][j];
+                    TPuntajeUsuario[i][j] = TPuntajeMaquinaColor1[i][j];
+                }
+            }
+            break;
+
+        case 0:
+            // Copia los valores al tablero principal
+            for (int i = 0; i < 16; i++) {
+                for (int j = 0; j < 16; j++) {
+                	TPuntajeMaquina[i][j] = TPuntajeMaquinaColor0[i][j];
+                	TPuntajeUsuario[i][j] = TPuntajeMaquinaColor1[i][j];
+                }
+            }
+            break;
+
+    }
+}
+
+void generarAdyacentes(salto *jugada){
+	coord aux;
+	for(int diffx=-1;diffx<2;diffx++){
+		for(int diffy=-1;diffy<2;diffy++){
+
+			aux.x=jugada->actual.x+diffx;
+			aux.y=jugada->actual.y+diffy;
+			if(checkadyacente(jugada->actual,aux)==TRUE){
+				if(TPuntajeMaquina[jugada->actual.x][jugada->actual.y]<TPuntajeMaquina[aux.x][aux.y]){
+					jugada->ruta[jugada->contRuta].coord[jugada->ruta[jugada->contRuta].contRuta++]=jugada->actual;
+					jugada->ruta[jugada->contRuta].coord[jugada->ruta[jugada->contRuta].contRuta++]=aux;
+					jugada->contRuta++;
+				}
+			}
 		}
-	//utilidad
-		tableroInicial();
-		imprimirTablero();
-
-	//asignación de ventanas
-		VentanaInicio = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaInicio"));
-		VentanaAyuda  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaAyuda"));
-		VentanaBando  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaBando"));
-		VentanaJuego  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaJuego"));
-		VentanaJuegoMaquina = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaJuegoMaquina"));
-		VentanaStats  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaStats"));
-		VentanaSalir  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaSalir"));
-		VentanaBusquedaPartida	= GTK_WIDGET(gtk_builder_get_object(builder,"VentanaBusquedaPartida"));
-		VentanaVisitante	= GTK_WIDGET(gtk_builder_get_object(builder,"VentanaVisitante"));
-		VentanaMvM	= GTK_WIDGET(gtk_builder_get_object(builder,"VentanaMvM"));
-
-
-	//botones para ventana de inicio
-		pvm  		= GTK_WIDGET(gtk_builder_get_object(builder, "pvm"));
-		g_signal_connect (pvm,"button-press-event",G_CALLBACK(CambiarVen),inicioabando1);
-		mvm         = GTK_WIDGET(gtk_builder_get_object (builder,"mvm"));
-		g_signal_connect (mvm,"button-press-event",G_CALLBACK(CambiarVen),inicioabando2);
-		stats       = GTK_WIDGET(gtk_builder_get_object (builder,"stats"));
-		g_signal_connect (stats,"button-press-event",G_CALLBACK(CambiarVen),inicioabando2);
-		SALIR       = GTK_WIDGET(gtk_builder_get_object (builder,"SALIR"));
-		g_signal_connect (SALIR,"button-press-event",G_CALLBACK(CambiarVen),salir);
-		InicioAyuda = GTK_WIDGET(gtk_builder_get_object (builder,"InicioAyuda"));
-		g_signal_connect (InicioAyuda,"button-press-event",G_CALLBACK(CambiarVen),inicioaayuda);
-
-
-	//botones de ventana ayuda
-		AyudaAtras  = GTK_WIDGET (gtk_builder_get_object(builder,"AyudaAtras"));
-		g_signal_connect (AyudaAtras,"button-press-event",G_CALLBACK(CambiarVen),ayudaainicio);
-
-	//botones de ventana bando
-		//botones de acceso
-		BandoAtras  = GTK_WIDGET(gtk_builder_get_object(builder,"BandoAtras"));
-		g_signal_connect (BandoAtras,"button-press-event",G_CALLBACK(CambiarVen),bandoainicio);
-		Empezar     = GTK_WIDGET(gtk_builder_get_object(builder,"Empezar"));
-		g_signal_connect (Empezar,"button-press-event",G_CALLBACK(CambiarVen),bandoajuego);
-
-		//botones de configuracion
-		america		= GTK_WIDGET(gtk_builder_get_object(builder,"america"));
-		g_signal_connect (america,"button-press-event",G_CALLBACK(SetSide),usa);
-		usrr		= GTK_WIDGET(gtk_builder_get_object(builder,"usrr"));
-		g_signal_connect (usrr,"button-press-event",G_CALLBACK(SetSide),rusia);
-		Aleatorio	= GTK_WIDGET(gtk_builder_get_object(builder,"Aleatorio"));
-		g_signal_connect (Aleatorio,"button-press-event",G_CALLBACK(SetSide),neutral);
-		//Edit botones de seleccion de jugador
-		Local= GTK_WIDGET(gtk_builder_get_object(builder,"Local"));
-		g_signal_connect (Local,"button-press-event",G_CALLBACK(SetTurn),Loc);
-		Maquina= GTK_WIDGET(gtk_builder_get_object(builder,"Maquina"));
-		g_signal_connect (Maquina,"button-press-event",G_CALLBACK(SetTurn),Mac);
-		AleatorioF 	= GTK_WIDGET(gtk_builder_get_object(builder,"AleatorioF"));
-		g_signal_connect (AleatorioF,"button-press-event",G_CALLBACK(SetTurn),Al);
-		//label nombre del jugador
-		PlayerName	= GTK_WIDGET(gtk_builder_get_object(builder,"PlayerName"));
-		gtk_entry_set_max_length (GTK_ENTRY (PlayerName), 19);
-
-	//Boton de ventana victoria
-		MENU  		= GTK_WIDGET(gtk_builder_get_object(builder, "MENU"));
-		g_signal_connect (MENU,"button-press-event",G_CALLBACK(CambiarVen),BACKWIN);
-
-	//ventana salir
-		//Edit botones para ventana de juego
-		sii  		= GTK_WIDGET(gtk_builder_get_object(builder, "si"));
-		g_signal_connect (sii,"button-press-event",G_CALLBACK(CambiarVen),si);
-		//botones para ventana de inicio
-		noo  		= GTK_WIDGET(gtk_builder_get_object(builder, "no"));
-		g_signal_connect (noo,"button-press-event",G_CALLBACK(CambiarVen),no);
-
-	//ventana juego
-		//botones
-		JuegoAtras	= GTK_WIDGET(gtk_builder_get_object(builder,"JuegoAtras"));
-		g_signal_connect (JuegoAtras,"button-press-event",G_CALLBACK(CambiarVen),juegoabando);
-		JuegoEnter  = GTK_WIDGET(gtk_builder_get_object(builder,"JuegoEnter"));
-		g_signal_connect (JuegoEnter,"button-press-event",G_CALLBACK(BotonEnter),bandoainicio);
-		HELPJUEGO	= GTK_WIDGET(gtk_builder_get_object(builder,"HELPJUEGO"));
-		g_signal_connect (HELPJUEGO,"button-press-event",G_CALLBACK(CambiarVen),JuegoAyuda);
-		//Edit Ayuda durante el juego
-		Juegoayuda = GTK_WIDGET(gtk_builder_get_object (builder,"Juegoayuda"));
-		g_signal_connect (Juegoayuda,"button-press-event",G_CALLBACK(CambiarVen),juegoabando);
-		//labels
-		NOMBREJUGADOR = GTK_WIDGET(gtk_builder_get_object(builder,"NOMBREJUGADOR"));
-		LabeldeControl= GTK_WIDGET(gtk_builder_get_object(builder,"LabeldeControl"));
-		NOMBREJUGADOR2= GTK_WIDGET(gtk_builder_get_object(builder,"NOMBREJUGADOR2"));
-		JuegoLabelTurno= GTK_WIDGET(gtk_builder_get_object(builder,"JuegoLabelTurno"));
-		TURNO 		= GTK_WIDGET(gtk_builder_get_object(builder,"TURNO"));
-		//Grilla
-		EventBox	= GTK_WIDGET(gtk_builder_get_object(builder,"EventBox"));
-		g_signal_connect (EventBox,"button-press-event",G_CALLBACK(ClickGrilla),NULL);
-		GridJuego	= GTK_WIDGET(gtk_builder_get_object(builder,"GridJuego"));
-
-
-		JuegoAtras1	= GTK_WIDGET(gtk_builder_get_object(builder,"JuegoAtras1"));
-		g_signal_connect (JuegoAtras1,"button-press-event",G_CALLBACK(CambiarVen),juegoabando);
-		JuegoEnter1  = GTK_WIDGET(gtk_builder_get_object(builder,"JuegoEnter1"));
-		g_signal_connect (JuegoEnter1,"button-press-event",G_CALLBACK(BotonEnter1),bandoainicio);
-		//Edit Ayuda durante el juego
-		Juegoayuda1 = GTK_WIDGET(gtk_builder_get_object (builder,"Juegoayuda1"));
-		g_signal_connect (Juegoayuda1,"button-press-event",G_CALLBACK(CambiarVen),JuegoAyuda);
-		//labels
-		NOMBREJUGADOR1 = GTK_WIDGET(gtk_builder_get_object(builder,"NOMBREJUGADOR1"));
-		LabeldeControl1= GTK_WIDGET(gtk_builder_get_object(builder,"LabeldeControl1"));
-		NOMBREJUGADOR21= GTK_WIDGET(gtk_builder_get_object(builder,"NOMBREJUGADOR21"));
-		JuegoLabelTurno1= GTK_WIDGET(gtk_builder_get_object(builder,"JuegoLabelTurno1"));
-		TURNO1 		= GTK_WIDGET(gtk_builder_get_object(builder,"TURNO1"));
-		//Grilla
-		EventBox1	= GTK_WIDGET(gtk_builder_get_object(builder,"EventBox1"));
-		g_signal_connect (EventBox1,"button-press-event",G_CALLBACK(ClickGrilla),NULL);
-		GridJuego1	= GTK_WIDGET(gtk_builder_get_object(builder,"GridJuego1"));
-
-	//ventana estadisticas
-		ChooserStats= GTK_WIDGET(gtk_builder_get_object(builder, "ChooserStats"));
-		BotonStats  = GTK_WIDGET(gtk_builder_get_object (builder,"BotonStats"));
-		TextoStats	= GTK_WIDGET(gtk_builder_get_object(builder,"TextoStats"));
-		gtk_text_view_set_editable(GTK_TEXT_VIEW(TextoStats), FALSE);
-		//señales
-		g_signal_connect (ChooserStats, "file-set",G_CALLBACK(guardar),NULL);
-		g_signal_connect (BotonStats, "button-press-event",G_CALLBACK(CambiarVen),statsainicio);
-
-	//VentanaBusquedaPartida
-		BotonBusquedaPartida = GTK_WIDGET(gtk_builder_get_object (builder,"BotonBusquedaPartida"));
-		g_signal_connect (BotonBusquedaPartida, "file-set",G_CALLBACK(BuscarPartida),NULL);
-		BotonOkBusquedaPartida = GTK_WIDGET(gtk_builder_get_object (builder,"BotonOkBusquedaPartida"));
-		g_signal_connect (BotonOkBusquedaPartida,"button-press-event",G_CALLBACK(CambiarVen),33);
-
-	//VentanaVisitante
-		EntryVisitante = GTK_WIDGET(gtk_builder_get_object (builder,"EntryVisitante"));
-		BotonOkVisitante = GTK_WIDGET(gtk_builder_get_object (builder,"BotonOkVisitante"));
-		g_signal_connect (BotonOkBusquedaPartida,"button-press-event",G_CALLBACK(cambiodeventanadelarmagedon1),NULL);
-
-	//VentanaMvM
-		MvMLocal	= GTK_WIDGET(gtk_builder_get_object(builder,"MvMLocal"));
-		g_signal_connect (MvMLocal,"button-press-event",G_CALLBACK(CambiarVen),selecrepo);
-		MvMVisitante= GTK_WIDGET(gtk_builder_get_object(builder,"MvMVisitante"));
-		g_signal_connect (MvMVisitante,"button-press-event",G_CALLBACK(cambiodeventanadelarmagedon),NULL);
-	//VentanaVictoria
-		VentanaVictoria =  GTK_WIDGET(gtk_builder_get_object(builder,"VentanaVictoria"));
-		g_signal_connect (MENU,"button-press-event",G_CALLBACK(CambiarVen),MEN);
-		LabelVictoria = GTK_WIDGET(gtk_builder_get_object(builder,"LabelVictoria"));
-
-	//imganes
-
-		//Inicio
-		gtk_button_set_image(GTK_BUTTON(pvm), gtk_image_new_from_file("src/utilidades/Inicio/PLAYERVSPC.png"));
-		gtk_button_set_image(GTK_BUTTON(mvm), gtk_image_new_from_file("src/utilidades/Inicio/PCVSPC.png"));
-		gtk_button_set_image(GTK_BUTTON(stats), gtk_image_new_from_file("src/utilidades/Inicio/STATS.png"));
-		gtk_button_set_image(GTK_BUTTON(InicioAyuda), gtk_image_new_from_file("src/utilidades/Inicio/HELPINICIO.png"));
-		gtk_button_set_image(GTK_BUTTON(SALIR), gtk_image_new_from_file("src/utilidades/Inicio/sal.png"));
-		HOPPITY  = GTK_WIDGET(gtk_builder_get_object(builder,"HOPPITY"));
-		gtk_image_set_from_file(GTK_IMAGE(HOPPITY), "src/utilidades/Inicio/HOPPITY.png");
-		COLDWAR  = GTK_WIDGET(gtk_builder_get_object(builder,"COLDWAR"));
-		gtk_image_set_from_file(GTK_IMAGE(COLDWAR), "src/utilidades/Inicio/COLDWAR.png");
-		FONDOINICIO  = GTK_WIDGET(gtk_builder_get_object(builder,"FONDOINICIO"));
-		gtk_image_set_from_file(GTK_IMAGE(FONDOINICIO), "src/utilidades/Inicio/FONDOINICIO.png");
-
-		sal  = GTK_WIDGET(gtk_builder_get_object(builder,"sal"));
-		gtk_image_set_from_file(GTK_IMAGE(sal), "src/utilidades/sal.png");
-
-		//ventana bando
-		gtk_button_set_image(GTK_BUTTON(BandoAtras), gtk_image_new_from_file("src/utilidades/Bando/BACKBANDO.png"));
-		gtk_button_set_image(GTK_BUTTON(AleatorioF), gtk_image_new_from_file("src/utilidades/Bando/RANDOM.png"));
-		gtk_button_set_image(GTK_BUTTON(Aleatorio), gtk_image_new_from_file("src/utilidades/Bando/RANDOM.png"));
-		gtk_button_set_image(GTK_BUTTON(Empezar), gtk_image_new_from_file("src/utilidades/Bando/START.png"));
-		gtk_button_set_image(GTK_BUTTON(america), gtk_image_new_from_file("src/utilidades/Bando/USA.png"));
-		gtk_button_set_image(GTK_BUTTON(usrr), gtk_image_new_from_file("src/utilidades/Bando/URRS.png"));
-		gtk_button_set_image(GTK_BUTTON(Maquina), gtk_image_new_from_file("src/utilidades/Bando/PC.png"));
-		gtk_button_set_image(GTK_BUTTON(Local), gtk_image_new_from_file("src/utilidades/Bando/PLAYER.png"));
-		FONDOBANDO  = GTK_WIDGET(gtk_builder_get_object(builder,"FONDOBANDO"));
-		gtk_image_set_from_file(GTK_IMAGE(FONDOBANDO), "src/utilidades/Bando/FONDOBANDO.png");
-		CHOSESIDE  = GTK_WIDGET(gtk_builder_get_object(builder,"CHOSESIDE"));
-		gtk_image_set_from_file(GTK_IMAGE(CHOSESIDE), "src/utilidades/Bando/CHOSESIDE.png");
-		INICIO  = GTK_WIDGET(gtk_builder_get_object(builder,"INICIO"));
-		gtk_image_set_from_file(GTK_IMAGE(INICIO), "src/utilidades/Bando/WHOSTARS.png");
-		PLAYERNAME  = GTK_WIDGET(gtk_builder_get_object(builder,"PLAYERNAME"));
-		gtk_image_set_from_file(GTK_IMAGE(PLAYERNAME), "src/utilidades/Bando/PLAYERNAME.png");
-
-
-		//ventana juego
-		gtk_button_set_image(GTK_BUTTON(JuegoAtras), gtk_image_new_from_file("src/utilidades/Juego/BACKJUEGO.png"));
-		gtk_button_set_image(GTK_BUTTON(Juegoayuda), gtk_image_new_from_file("src/utilidades/Juego/HELPJUEGO.png"));
-		TABLERO  = GTK_WIDGET(gtk_builder_get_object(builder,"TABLERO"));
-		gtk_image_set_from_file(GTK_IMAGE(TABLERO), "src/utilidades/Juego/Tablero.png");
-
-		//vetana Juego Maquina
-		gtk_button_set_image(GTK_BUTTON(JuegoAtras1), gtk_image_new_from_file("src/utilidades/Juego/BACKJUEGO.png"));
-		gtk_button_set_image(GTK_BUTTON(Juegoayuda1), gtk_image_new_from_file("src/utilidades/Juego/HELPJUEGO.png"));
-		TABLERO1  = GTK_WIDGET(gtk_builder_get_object(builder,"TABLERO1"));
-		gtk_image_set_from_file(GTK_IMAGE(TABLERO1), "src/utilidades/Juego/Tablero.png");
-
-
-
-		//ventana victoria
-		FONDOVICTORIA  = GTK_WIDGET(gtk_builder_get_object(builder,"FONDOVICTORIA"));
-		gtk_image_set_from_file(GTK_IMAGE(FONDOVICTORIA), "src/utilidades/Victoria/FONDOVICTORIA.png");
-
-
-
-	if ((Estadisticas=fopen(RutaEstadisticas,"r"))==NULL)
-	{
-		Estadisticas=fopen(RutaEstadisticas,"w");
-		fwrite(EncabezadoEstadiscas,1,strlen(EncabezadoEstadiscas),Estadisticas);
-		fclose(Estadisticas);
 	}
-	gtk_widget_show_all (VentanaInicio);
+}
 
-	gtk_main();
+void generarSaltos(salto *jugada){
+	coord auxInicio =jugada->actual;
+	coord auxruta[8];
+	char noJumpable=0;
+	char banderaUwU =0;
+	char primeraVezOwO =1;
+	coord mejorCoord=auxInicio;
+	do{
+		noJumpable=0;
+		auxruta[0].x=auxInicio.x -2;auxruta[0].y=auxInicio.y -2;
+		auxruta[1].x=auxInicio.x -0;auxruta[1].y=auxInicio.y -2;
+		auxruta[2].x=auxInicio.x -2;auxruta[2].y=auxInicio.y -0;
 
+		auxruta[3].x=auxInicio.x +2;auxruta[3].y=auxInicio.y +2;
+		auxruta[4].x=auxInicio.x +0;auxruta[4].y=auxInicio.y +2;
+		auxruta[5].x=auxInicio.x +2;auxruta[5].y=auxInicio.y +0;
+
+		auxruta[6].x=auxInicio.x -2;auxruta[6].y=auxInicio.y +2;
+		auxruta[7].x=auxInicio.x +2;auxruta[7].y=auxInicio.y -2;
+
+
+		int coordEsquizofrenicas[4];
+		for(int i =0;i<8;i++){
+			coordEsquizofrenicas[0]=auxInicio.x;
+			coordEsquizofrenicas[1]=auxInicio.y;
+			coordEsquizofrenicas[2]=auxruta[i].x;
+			coordEsquizofrenicas[3]=auxruta[i].y;
+			if(isJumpable(tablero,coordEsquizofrenicas)==TRUE){
+				if(TPuntajeMaquina[mejorCoord.x][mejorCoord.y]<TPuntajeMaquina[auxruta[i].x][auxruta[i].y]){
+					mejorCoord=auxruta[i];
+				}else{
+					noJumpable++;
+				}
+			}else{
+				noJumpable++;
+			}
+		}
+
+		if(noJumpable==8){
+			break;
+		}else{
+
+			banderaUwU =1;
+			if (primeraVezOwO==1){
+				primeraVezOwO = 0;
+				jugada->ruta[jugada->contRuta].coord[jugada->ruta[jugada->contRuta].contRuta++]=jugada->actual;
+			}
+		}
+
+		jugada->ruta[jugada->contRuta].coord[jugada->ruta[jugada->contRuta].contRuta++]=mejorCoord;
+		auxInicio=mejorCoord;
+
+	}while(TRUE);
+	if(banderaUwU==1){
+		jugada->contRuta++;
+	}
+}
+
+int predit_salto(char Tfalso[16][16],coord ficha,char turno){
+	//colorMaquina
+	coord auxInicio =ficha;
+	coord auxFinal[8];
+	char noJumpable=0;
+	char banderaUwU =0;
+	char primeraVezOwO =1;
+	coord mejorCoord=auxInicio;
+	int preditPuntos =0;
+	do{
+		noJumpable=0;
+		auxFinal[0].x=auxInicio.x -2;auxFinal[0].y=auxInicio.y -2;
+		auxFinal[1].x=auxInicio.x -0;auxFinal[1].y=auxInicio.y -2;
+		auxFinal[2].x=auxInicio.x -2;auxFinal[2].y=auxInicio.y -0;
+
+		auxFinal[3].x=auxInicio.x +2;auxFinal[3].y=auxInicio.y +2;
+		auxFinal[4].x=auxInicio.x +0;auxFinal[4].y=auxInicio.y +2;
+		auxFinal[5].x=auxInicio.x +2;auxFinal[5].y=auxInicio.y +0;
+
+		auxFinal[6].x=auxInicio.x -2;auxFinal[6].y=auxInicio.y +2;
+		auxFinal[7].x=auxInicio.x +2;auxFinal[7].y=auxInicio.y -2;
+
+
+		int coordEsquizofrenicas[4];
+		for(int i =0;i<8;i++){
+			coordEsquizofrenicas[0]=auxInicio.x;
+			coordEsquizofrenicas[1]=auxInicio.y;
+			coordEsquizofrenicas[2]=auxFinal[i].x;
+			coordEsquizofrenicas[3]=auxFinal[i].y;
+			if(isJumpable(Tfalso,coordEsquizofrenicas)==TRUE){
+				if(turno == PC){
+					if(TPuntajeMaquina[mejorCoord.x][mejorCoord.y]<TPuntajeMaquina[auxFinal[i].x][auxFinal[i].y]){
+						mejorCoord=auxFinal[i];
+					}else{
+						noJumpable++;
+					}
+
+				}else{
+					if(TPuntajeUsuario[mejorCoord.x][mejorCoord.y]<TPuntajeUsuario[auxFinal[i].x][auxFinal[i].y]){
+						mejorCoord=auxFinal[i];
+					}else{
+						noJumpable++;
+					}
+				}
+			}else{
+				noJumpable++;
+			}
+		}
+
+		if(noJumpable==8){
+			break;
+		}else{
+
+			banderaUwU =1;
+			if (primeraVezOwO==1){
+				primeraVezOwO = 0;
+			}
+		}
+		preditPuntos +=ESCALAR_PREDIT;
+		auxInicio=mejorCoord;
+
+
+	}while(TRUE);
+	if(banderaUwU==1){
+		return preditPuntos;
+	}
 	return 0;
 }
+
+void generarPuntajes(salto* jugada){
+	char auxChar = colorMaquina == BLANCO?'R':'N';
+	coord aux;
+	for (int ii=0;ii<jugada->contRuta;ii++){
+		for(int i=0;i<16;i++){
+			for (int j=0;j<16;j++){
+				//ficha aliada
+				if (jugada->ruta[ii].tableroFalso[i][j]==auxChar){
+					jugada->puntaje[ii]+=TPuntajeMaquina[i][j];
+					jugada->puntaje[ii]+=(jugada->ruta[ii].contRuta-1)*ESCALAR_SALTOS;
+
+					aux.x=i;
+					aux.y=j;
+					jugada->puntaje[ii]+= predit_salto(jugada->ruta[ii].tableroFalso,aux, PC);
+				}//Ficha mala >:C
+				else if (jugada->ruta[ii].tableroFalso[i][j]!='-'){
+					jugada->puntaje[ii]-=TPuntajeUsuario[i][j];
+					aux.x=i;
+					aux.y=j;
+					jugada->puntaje[ii]-= predit_salto(jugada->ruta[ii].tableroFalso,aux,PERSONA);
+				}
+			}
+		}
+	}
+}
+
+void generarTablerosPrueba(salto *jugada){
+	char auxChar = colorMaquina == BLANCO?'R':'N';
+	for(int uwu=0;uwu<jugada->contRuta;uwu++){
+		for (int i = 0; i < 16; i++) {
+			for (int j = 0; j < 16; j++) {
+				jugada->ruta[uwu].tableroFalso[i][j] = tablero[i][j];
+			}
+		}
+	}
+	for(int i = 0;i<jugada->contRuta;i++){
+		jugada->ruta[i].tableroFalso
+		[jugada->ruta[i].coord[0].x]
+		[jugada->ruta[i].coord[0].y]
+		 = '-';
+
+		jugada->ruta[i].tableroFalso
+		[jugada->ruta[i].coord[jugada->ruta[i].contRuta-1].x]
+		[jugada->ruta[i].coord[jugada->ruta[i].contRuta-1].y]
+		= auxChar;
+	}
+}
+
+void elegirMejorPuntaje(salto *jugada,char color){
+	int mejorPunt=-999999;
+	int mejorI =0;
+	for(int i=0;i<jugada->contRuta;i++){
+		if(jugada->puntaje[i]>mejorPunt){
+			mejorPunt=jugada->puntaje[i];
+			mejorI=i;
+		}
+	}
+	for(int i=0;i<16;i++){
+		for(int j=0;j<16;j++){
+			tablero[i][j]=jugada->ruta[mejorI].tableroFalso[i][j];
+		}
+	}
+	printf("Jugada Ejecutada:");
+	for(int i=0;i<jugada->ruta[mejorI].contRuta;i++){
+		printf("[%d;%d]%c\n",jugada->ruta[mejorI].coord[i].x,jugada->ruta[mejorI].coord[i].y,i<jugada->ruta[mejorI].contRuta-1?',':'\n');
+		if (color=='R')
+		{
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),jugada->ruta[mejorI].coord[i].x,pcSiguiente.x)),PuntoRojo);
+		}else if(color=='N'){
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),jugada->ruta[mejorI].coord[i].x,pcSiguiente.x)),PuntoNegro);
+		}
+	}
+}
+
+void jugadaPc()
+{
+	salto jugada;
+	jugada.contRuta = 0;
+	for(int i=0;i<N;i++){
+		jugada.puntaje[i]=0;
+		jugada.ruta[i].contRuta=0;
+	}
+	char auxChar = colorMaquina == BLANCO?'R':'N';
+	for(int x = 0;x<16;x++){
+		for(int y = 0;y<16;y++){
+			if(tablero[x][y]==auxChar){
+				jugada.actual.x=x;
+				jugada.actual.y=y;
+				generarAdyacentes(&jugada);
+				generarSaltos(&jugada);
+			}
+		}
+	}
+	generarTablerosPrueba(&jugada);
+	generarPuntajes(&jugada);
+	elegirMejorPuntaje(&jugada,auxChar);
+}
+
+
+
+#endif /* IA_H_ */
