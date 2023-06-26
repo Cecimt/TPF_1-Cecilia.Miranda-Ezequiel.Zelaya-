@@ -23,6 +23,7 @@
 #define PuntoRojo "src/utilidades/Juego/PuntoRojo.png"
 #define EspacioBlanco "src/utilidades/Juego/EspacioBlanco.png"
 #define RutaEstadisticas "src/Estadisticas"
+#define RutaEstadisticas2 "src/Estadisticasfake"
 #define salir 96
 #define inicioabando1 0
 #define inicioabando2 12
@@ -32,9 +33,8 @@
 #define inicioastats 4
 #define inicioaayuda 5
 #define ayudaainicio 6
-#define ayudajuego 222
 #define repoabando 7
-#define selecrepo 8
+#define selecrepo 85
 #define repoavisitante 9
 #define neutral 00
 #define rusia 88
@@ -49,6 +49,7 @@
 #define NEGRO 0
 #define ROJO 1
 #define JuegoAyuda 7
+#define JuegoAyuda1 73
 #define Loc 44
 #define Mac 55
 #define Al 66
@@ -59,22 +60,25 @@
 #define PC 0
 #define N 500
 #define M 100
-#define TRUE 1
-#define FALSE 0
 #define statsainicio 10
 #define MEN 55
+
 
 #define ESCALAR_SALTOS 100
 #define ESCALAR_PREDIT 50
 
 //utilidad//
 GtkBuilder * builder;
-gchar * filename;
 gchar * RepositorioCompartido;
+gchar * filename;
+gchar * RepositorioCompartidoConfig;
 gchar	EncabezadoEstadiscas[]={"                                    Estadisticas"};
 gchar	StrControlEstadisticas[70];
 gint 	i,j;
-FILE  * Estadisticas;
+FILE  * Estadisticas;//?????????????????????????????????????????
+FILE  *	archivoConfiguracion=NULL;
+FILE  * archivoJugadas=NULL;
+FILE  * Estadisticas=NULL;
 gint	victoria=1;
 char 	turnoActual;
 int		colorMaquina;
@@ -118,7 +122,11 @@ typedef struct estadisticasJugador
 	int ganadas;
 	int perdidas;
 	int totales;
+	char name[19];
 }StructEstadisticas;
+
+
+StructEstadisticas GuardadoStats;
 
 typedef struct string{
 	char* array;
@@ -188,6 +196,25 @@ GtkWidget * JuegoLabelTurno;
 GtkWidget * JuegoEnter;
 GtkWidget * TURNO;
 
+//widgets de ventanajuegomaquina
+GtkWidget * VentanaJuegoMaquina;
+GtkWidget * JuegoAtras1;
+GtkWidget * LabeldeControl1;
+GtkWidget * NOMBREJUGADOR1;
+GtkWidget * NOMBREJUGADOR21;
+GtkWidget * PUNTOSPLAYER1;
+GtkWidget * PUNTOSMAQUINA1;
+GtkWidget * GridJuego1;
+GtkWidget * EventBox1;
+GtkWidget * VentanaSalir1;
+GtkWidget * Juegoayuda1;
+GtkWidget * JuegoLabelTurno1;
+GtkWidget * JuegoEnter1;
+GtkWidget * TURNO1;
+GtkWidget * TABLERO1;
+
+
+
 
 //widgets de VentanaStats
 GtkWidget * VentanaStats;
@@ -203,6 +230,8 @@ GtkWidget * BotonOkBusquedaPartida;
 //widgets de VentanaVisitante
 GtkWidget * VentanaVisitante;
 GtkWidget * EntryVisitante;
+GtkWidget * BotonOkVisitante;
+
 
 //widgets de VentanaMvM
 GtkWidget * VentanaMvM;
@@ -213,8 +242,6 @@ GtkWidget * MvMVisitante;
 GtkWidget * VentanaVictoria;
 GtkWidget * MENU;
 GtkWidget * LabelVictoria;
-
-
 
 //widgets imagenes
 
