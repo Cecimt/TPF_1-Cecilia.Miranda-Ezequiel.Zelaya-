@@ -13,6 +13,60 @@
 //void GuardarNombre(GtkWidget *event_box, Gdklabel *event, gpointer data)
 //funcion para copiar el contenido de un archivo dentro de una cadena
 //
+/*void stats() {
+	int valor;
+	StructEstadisticas jugador;
+	FILE* estadisticas;
+
+	do {
+		switch (valor) {
+		case 0:
+			break;
+		case 1:
+			printf("Ingrese el nombre: ");
+			scanf("%s", jugador.name);
+			scanf("%d", &jugador.ganadas);
+			printf("Ingrese la cantidad de partidas perdidas: ");
+			scanf("%d", &jugador.perdidas);
+			printf("Ingrese la cantidad de partidas jugadas: ");
+			scanf("%d", &jugador.totales);
+
+			estadisticas = fopen("Estadisticas.bin", "ab");
+			if (estadisticas == NULL) {
+				printf("Error al abrir el archivo de estadisticas para escritura.\n");
+				return;
+			}
+
+			fwrite(&jugador, sizeof(StructEstadisticas), 1, estadisticas);
+			fclose(estadisticas);
+			break;
+		case 2:
+			estadisticas = fopen("Estadisticas.bin", "rb");
+			if (estadisticas == NULL) {
+				printf("Error al abrir el archivo de estadisticas para lectura.\n");
+				return;
+			}
+
+			while (fread(&jugador, sizeof(StructEstadisticas), 1, estadisticas) == 1) {
+				// Realizar las operaciones que desees con los datos leídos
+				printf("Nombre: %s\n", jugador.name);
+				printf("Ganadas: %d\n", jugador.ganadas);
+				printf("Perdidas: %d\n", jugador.perdidas);
+				printf("Totales: %d\n", jugador.totales);
+				printf("\n");
+			}
+
+			fclose(estadisticas);
+			break;
+		}
+
+		break;
+	} while (valor != 0);
+}*/
+
+
+
+
 void CambiarVenVisitante(GtkWidget *event_box, GdkEventButton *event, gpointer data)
 {
 	gtk_widget_destroy (VentanaMvM);
@@ -53,18 +107,103 @@ void ComprobarArchConfig()
 
 }
 
-void guardar_texto()
+void leerConfig()
 {
-    // Obtener el contenido del campo de entrada
-	strncpy(Juego.username, gtk_entry_get_text(GTK_ENTRY(PlayerName)), 19);
-	gtk_label_set_text(GTK_LABEL(NOMBREJUGADOR), Juego.username);
-	return;
+	FILE * a;
+		if((a=fopen(RepositorioCompartidoConfig,"r"))==NULL)//cambiar por el nombre del archivo de configuracion
+		{
+			gtk_label_set_text (GTK_LABEL(LabeldeControl),"ERROR AL SELECCIONAR EL ARCHIVO DE JUEGO \n CONFIGURACIONES DE PARTIDA NO EXISTE \n NECESARIO REINICIAR JUEGO");
+			gtk_widget_show_all (VentanaJuego);
+			return;
+		}
+		fread(&Juego,sizeof(datosJuego),1,a);
+}
+
+void lecturadearchivosdelArmagedon()
+{
+	archivoJugadas=fopen(RepositorioCompartidoConfig,"r");
+		fread(&LOCURA.locuraGuardar[0].x,sizeof(coord),1,archivoJugadas);
+		fread(&LOCURA.locuraGuardar[0].y,sizeof(coord),1,archivoJugadas);
+		fread(&LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x,sizeof(coord),1,archivoJugadas);
+		fread(&LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y,sizeof(coord),1,archivoJugadas);
+		fclose(archivoJugadas);
+		tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y]='-';
+		tablero[LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x][LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y]=Juego.MachineSide;
+		if(Juego.MachineSide=='N')
+		{
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y,LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x)),PuntoNegro);
+		}else{
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y,LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x)),PuntoRojo);
+		}
+		remove(RepositorioCompartidoConfig);
+}
+
+void lecturadearchivosdelArmagedon1()
+{
+	archivoJugadas=fopen(RepositorioCompartidoConfig,"r");
+		fread(&LOCURA.locuraGuardar[0].x,sizeof(coord),1,archivoJugadas);
+		fread(&LOCURA.locuraGuardar[0].y,sizeof(coord),1,archivoJugadas);
+		fread(&LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x,sizeof(coord),1,archivoJugadas);
+		fread(&LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y,sizeof(coord),1,archivoJugadas);
+		fclose(archivoJugadas);
+		tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y]='-';
+		tablero[LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x][LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y]=Juego.MachineSide;
+		if(Juego.MachineSide=='N')
+		{
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y,LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x)),PuntoNegro);
+		}else{
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y,LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x)),PuntoRojo);
+		}
+		remove(RepositorioCompartidoConfig);
 }
 
 void guardar_nombre2()
 {
 	strncpy(Juego.machinename, gtk_entry_get_text(GTK_ENTRY(EntryVisitante)), 19);
 	gtk_label_set_text(GTK_LABEL(NOMBREJUGADOR), Juego.machinename);
+	return;
+}
+
+void cambiodeventanadelarmagedon()
+{
+	gtk_widget_hide(VentanaMvM);
+	gtk_widget_show_all(VentanaVisitante);
+	guardar_nombre2();
+}
+
+void cambiodeventanadelarmagedon1()
+{
+	gtk_widget_hide(VentanaVisitante);
+	lecturadearchivosdelArmagedon1();
+	leerConfig();
+	gtk_widget_show_all(VentanaJuegoMaquina);
+
+}
+
+
+
+void crearMovimiento()
+{
+	archivoJugadas=fopen(RepositorioCompartidoConfig,"w");
+	fwrite(&LOCURA.locuraGuardar[0].x,sizeof(coord),1,archivoJugadas);
+	fwrite(&LOCURA.locuraGuardar[0].y,sizeof(coord),1,archivoJugadas);
+	fwrite(&LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x,sizeof(coord),1,archivoJugadas);
+	fwrite(&LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y,sizeof(coord),1,archivoJugadas);
+	fclose(archivoJugadas);
+}
+
+void configPartida()
+{
+	archivoConfiguracion=fopen(RepositorioCompartidoConfig,"w");
+	fwrite(&Juego,sizeof(datosJuego),1,archivoConfiguracion);
+	fclose(archivoConfiguracion);
+}
+
+void guardar_texto()
+{
+    // Obtener el contenido del campo de entrada
+	strncpy(Juego.username, gtk_entry_get_text(GTK_ENTRY(PlayerName)), 19);
+	gtk_label_set_text(GTK_LABEL(NOMBREJUGADOR), Juego.username);
 	return;
 }
 
@@ -154,6 +293,113 @@ int victoriaNegro()
   }
   return 0;
 }
+
+void verificarVictoria(){
+
+	if(victoriaRojo() == 2){
+		gtk_label_set_text(GTK_LABEL(LabelVictoria), "Gano USA y perdio URSS\npero siempre gana el amor");
+		gtk_widget_destroy (VentanaJuego);
+		gtk_widget_destroy(VentanaInicio);
+		gtk_widget_show (VentanaVictoria);
+		gtk_widget_destroy (VentanaJuego);
+		gtk_widget_destroy(VentanaInicio);
+
+	}else if(victoriaNegro() == 1){
+		gtk_label_set_text(GTK_LABEL(LabelVictoria), "Gano URSS y perdio USA\npero siempre gana el amor");
+		gtk_widget_destroy (VentanaJuego);
+		gtk_widget_destroy(VentanaInicio);
+		gtk_widget_show (VentanaVictoria);
+		gtk_widget_destroy (VentanaJuego);
+		gtk_widget_hide(VentanaInicio);
+	}
+}
+
+//void GuardarNombre(GtkWidget *event_box, Gdklabel *event, gpointer data)
+//funcion para copiar el contenido de un archivo dentro de una cadena
+//
+/*void stats() {
+	int valor;
+	StructEstadisticas jugador;
+	FILE* estadisticas;
+
+	do {
+		switch (valor) {
+		case 0:
+			break;
+		case 1:
+			printf("Ingrese el nombre: ");
+			scanf("%s", jugador.name);
+			scanf("%d", &jugador.ganadas);
+			printf("Ingrese la cantidad de partidas perdidas: ");
+			scanf("%d", &jugador.perdidas);
+			printf("Ingrese la cantidad de partidas jugadas: ");
+			scanf("%d", &jugador.totales);
+
+			estadisticas = fopen("Estadisticas.bin", "ab");
+			if (estadisticas == NULL) {
+				printf("Error al abrir el archivo de estadisticas para escritura.\n");
+				return;
+			}
+
+			fwrite(&jugador, sizeof(StructEstadisticas), 1, estadisticas);
+			fclose(estadisticas);
+			break;
+		case 2:
+			estadisticas = fopen("Estadisticas.bin", "rb");
+			if (estadisticas == NULL) {
+				printf("Error al abrir el archivo de estadisticas para lectura.\n");
+				return;
+			}
+
+			while (fread(&jugador, sizeof(StructEstadisticas), 1, estadisticas) == 1) {
+				// Realizar las operaciones que desees con los datos leídos
+				printf("Nombre: %s\n", jugador.name);
+				printf("Ganadas: %d\n", jugador.ganadas);
+				printf("Perdidas: %d\n", jugador.perdidas);
+				printf("Totales: %d\n", jugador.totales);
+				printf("\n");
+			}
+
+			fclose(estadisticas);
+			break;
+		}
+
+		break;
+	} while (valor != 0);
+}*/
+
+/*void ComprobarArchConfig()
+{
+	FILE * a;
+	char c;
+	if((a=fopen(RepositorioCompartido,"r"))==NULL)//cambiar por el nombre del archivo de configuracion
+	{
+		gtk_label_set_text (GTK_LABEL(LabeldeControl),"ERROR AL SELECCIONAR EL ARCHIVO DE JUEGO \n CONFIGURACIONES DE PARTIDA NO EXISTE \n NECESARIO REINICIAR JUEGO");
+		gtk_widget_show_all (VentanaJuego);
+		return;
+	}
+	for (int cont=0;(c=fgetc(a))!=',';cont++)
+	{
+		Juego.username[cont]=c;
+	}
+	for (int cont=0;(c=fgetc(a))!=',';cont++)
+	{
+		if(c!='N' && c!='R')
+		{
+			gtk_label_set_text (GTK_LABEL(LabeldeControl),"ERROR AL SELECCIONAR EL ARCHIVO DE JUEGO \n CONFIGURACIONES DE PARTIDA COLOR DEL JUGADOR \n NECESARIO REINICIAR JUEGO");
+			gtk_widget_show_all (VentanaJuego);
+			return;
+		}
+		Juego.UserSide=c;
+		if (Juego.UserSide=='N')
+		{
+			Juego.MachineSide='R';
+		}else{
+			Juego.MachineSide='N';
+		}
+	}
+
+}*/
 
 void CrearEstadisticas()
 {
@@ -364,6 +610,8 @@ void SetMode (int data)
 	}
 }
 
+
+
 void SetSide(GtkWidget *event_box, GdkEventButton *event, gpointer data)
 {
 	if((int)data==((int)usa))
@@ -391,16 +639,19 @@ void SetSide(GtkWidget *event_box, GdkEventButton *event, gpointer data)
 			colorJugador=BLANCO;
 			Juego.MachineSide='N';
 			colorMaquina=NEGRO;
+			gtk_label_set_text(GTK_LABEL(LabeldeControl), "Player 1:URSS \n PLayer 2:USA");
 			printf("MEODIO2");
 		}else{
 			Juego.UserSide='N';
 			colorJugador=NEGRO;
 			Juego.MachineSide='R';
 			colorMaquina=BLANCO;
+			gtk_label_set_text(GTK_LABEL(LabeldeControl), "Player 1:USA \n PLayer 2:URSS");
 			printf("MEODIO3");
 		}
 	}
 }
+
 
 void guardar(GtkFileChooserButton *button, gpointer user_data)
 {
@@ -415,33 +666,99 @@ void BuscarPartida(GtkFileChooserButton *button, gpointer user_data)
 {
     GtkFileChooser *file_chooser = GTK_FILE_CHOOSER(button);
     // Obtener la dirección del archivo seleccionado
-    RepositorioCompartido = gtk_file_chooser_get_filename(file_chooser);
+    RepositorioCompartidoConfig = gtk_file_chooser_get_filename(file_chooser);
     //vuelve a la pantalla anterior
-    g_print("repositorio compartido: %s \n",RepositorioCompartido);
+    g_print("repositorio compartido: %s \n",RepositorioCompartidoConfig);
+    strcat(RepositorioCompartidoConfig,Juego.username);
 }
 
 //funcion para confirmar que quiere abrir el archivo seleccionado
-void mostrar(GtkWidget *event_box, GdkEventButton *event, gpointer data)
-{
-	   int c,cont;
-	    FILE *a;
-	    if ((a=fopen(RutaEstadisticas,"r"))==NULL)
-	    {
-	    	printf("error\n");
-	    }else{
-	    	for (cont=0;(c=fgetc(a))!=EOF;cont++){}
-	    	printf("tamaño del archivo: %d \n",cont-1);
-	    	gchar * str = copy_file_to_string(RutaEstadisticas);
-	    	    if (str != NULL)
-	    	    {
-	    	        printf("Contenido del archivo:\n%s\n", str);
-	    	        GtkTextBuffer * buffer = gtk_text_view_get_buffer(TextoStats);
-	    	        GtkTextIter end_iter;
-					gtk_text_buffer_get_end_iter(buffer, &end_iter);
-					gtk_text_buffer_insert(buffer, &end_iter, str, -1);
-	    	        free(str);
-	    	    }
-	    }
+void mostrar() {
+    StructEstadisticas j;
+    FILE* a;
+//
+    if ((a = fopen(RutaEstadisticas, "r")) == NULL) {
+        printf("Error al abrir el archivo\n");
+    } else {
+        FILE* b = fopen(RutaEstadisticas2, "a");
+        while ((fread(&GuardadoStats,43, 1, a)==43)){
+            fprintf(b, "nombre:%s  jugadas: %d  ganadas: %d perdidas: %d \n", GuardadoStats.name, GuardadoStats.totales, GuardadoStats.ganadas, GuardadoStats.perdidas);
+        }
+        fclose(b);
+        gchar* str = NULL;
+        gsize length;
+        if (g_file_get_contents(RutaEstadisticas2, &str, &length, NULL)) {
+            printf("Contenido del archivo:\n%s\n", str);
+
+            GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(TextoStats));
+            GtkTextIter end_iter;
+            gtk_text_buffer_get_end_iter(buffer, &end_iter);
+            gtk_text_buffer_insert(buffer, &end_iter, str, -1);
+
+            g_free(str);
+            remove(RutaEstadisticas2);
+        } else {
+            printf("Error al leer el archivo\n");
+        }
+
+        fclose(a);
+    }
+}
+
+
+void relacionHoppityTablero(){
+
+	for(int i=0;i<16;i++){
+		for(int j=0;j<16;j++){
+			if(Juego.UserSide=='R'){
+				if(tablero[i][j]=='R')
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)), PuntoRojo);
+				else if (tablero[i][j]=='N')
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)), PuntoNegro);
+				else
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)),EspacioBlanco);
+			}else{
+				if(tablero[i][j]=='R')
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)), PuntoNegro);
+				else if (tablero[i][j]=='N')
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)), PuntoRojo);
+				else
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)),EspacioBlanco);
+			}
+
+		}
+	}
+	for(int i=0;i<16;i++){
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),i,0)),EspacioBlanco);
+		}
+	verificarVictoria();
+}
+void relacionHoppityTablero1(){
+
+	for(int i=0;i<16;i++){
+		for(int j=0;j<16;j++){
+			if(Juego.UserSide=='R'){
+				if(tablero[i][j]=='R')
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),j,i+1)), PuntoRojo);
+				else if (tablero[i][j]=='N')
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),j,i+1)), PuntoNegro);
+				else
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),j,i+1)),EspacioBlanco);
+			}else{
+				if(tablero[i][j]=='R')
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),j,i+1)), PuntoNegro);
+				else if (tablero[i][j]=='N')
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),j,i+1)), PuntoRojo);
+				else
+					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),j,i+1)),EspacioBlanco);
+			}
+
+		}
+	}
+	for(int i=0;i<16;i++){
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),i,0)),EspacioBlanco);
+		}
+	verificarVictoria();
 }
 
 //funcion que inicia el juego en Jugador vs maquina
@@ -464,7 +781,7 @@ void CambiarVen (GtkWidget *event_box, GdkEventButton *event, gpointer data)
 	case(inicioabando2):
 		gtk_widget_destroy (VentanaInicio);
 		SetMode(mVm);
-		gtk_widget_show_all (VentanaMvM);
+		gtk_widget_show_all (VentanaBusquedaPartida);
 		break;
 	case(bandoajuego):
 		gtk_widget_hide (VentanaBando);
@@ -472,9 +789,15 @@ void CambiarVen (GtkWidget *event_box, GdkEventButton *event, gpointer data)
 		gtk_label_set_text(GTK_LABEL(TURNO),(Juego.UserTurn)==0?"TURNO P":"TURNO M");
 		turnoActual=(Juego.UserTurn)==0?'P':'M';
 		tablerosPuntaje(colorMaquina);
-		relacionHoppityTablero();
-		gtk_widget_show_all (VentanaJuego);
+		if (Juego.mod=='P'){
+			relacionHoppityTablero();
+			gtk_widget_show_all (VentanaJuego);
+		}else{
+			relacionHoppityTablero1();
+			gtk_widget_show_all (VentanaJuegoMaquina);
+		}
 		break;
+
 	case(bandoainicio):
 		gtk_widget_hide (VentanaBando);
 		gtk_widget_show_all (VentanaInicio);
@@ -487,23 +810,19 @@ void CambiarVen (GtkWidget *event_box, GdkEventButton *event, gpointer data)
 		gtk_widget_hide (VentanaInicio);
 		gtk_widget_show_all (VentanaAyuda);
 		break;
-	case(JuegoAyuda):
+	case(JuegoAyuda)://////mirar
 			gtk_widget_show_all (VentanaAyuda);
 			break;
 	case(ayudaainicio):
 		gtk_widget_hide (VentanaAyuda);
 		gtk_widget_show_all (VentanaInicio);
 		break;
-	case(ayudajuego):
-		gtk_widget_hide (VentanaAyuda);
-		gtk_widget_show_all (VentanaJuego);
-		break;
 	case(juegoabando):
 		gtk_widget_hide (VentanaJuego);
 		gtk_widget_show_all (VentanaSalir);
 		break;
 	case(si):
-		gtk_widget_destroy(VentanaJuego);
+		gtk_widget_hide(VentanaJuego);
 		gtk_widget_destroy(VentanaSalir);
 		gtk_widget_show_all (VentanaInicio);
 		break;
@@ -513,13 +832,13 @@ void CambiarVen (GtkWidget *event_box, GdkEventButton *event, gpointer data)
 		gtk_widget_show_all (VentanaJuego);
 		break;
 	case(selecrepo):
-		gtk_widget_destroy(VentanaMvM);
-		gtk_widget_show_all(VentanaBusquedaPartida);
+		gtk_widget_hide(VentanaMvM);
+		gtk_widget_show_all(VentanaBando);
+		configPartida();
 		break;
 	case(repoavisitante):
-		gtk_widget_destroy(VentanaBusquedaPartida);
-		ComprobarArchConfig();
 		gtk_widget_show_all (VentanaVisitante);
+		gtk_widget_destroy(VentanaBusquedaPartida);
 		break;
 	case(statsainicio):
 		gtk_widget_destroy(VentanaStats);
@@ -528,7 +847,32 @@ void CambiarVen (GtkWidget *event_box, GdkEventButton *event, gpointer data)
 	case (MEN):
 		gtk_widget_destroy(VentanaVictoria);//edit
 		gtk_widget_show_all(VentanaInicio);
+		break;
+	case(33):
+		gtk_widget_destroy(VentanaBusquedaPartida);
+		gtk_widget_show_all(VentanaMvM);
+		break;
 	}
+}
+
+int isJumpableModificado()
+{
+	int coord[4];
+	int result;
+	for(int i =1;i<LOCURA.locuraLongitud;i++){
+
+		coord[0]=LOCURA.locuraGuardar[i-1].x;
+		coord[1]=LOCURA.locuraGuardar[i-1].y;
+		coord[2]=LOCURA.locuraGuardar[i].x;
+		coord[3]=LOCURA.locuraGuardar[i].y;
+
+
+		result=isJumpable(tablero,coord);
+		if(result == FALSE){
+			return FALSE;
+		}
+	}
+	return TRUE;
 }
 
 int checkJugada()
@@ -558,14 +902,77 @@ int checkJugada()
 	return 666;
 }
 
+int checkJugada1()
+{
+	if((checkadyacente(LOCURA.locuraGuardar[0],LOCURA.locuraGuardar[1]))==1 && LOCURA.locuraLongitud==2)
+	{
+		tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y]=Juego.UserSide;
+		if(Juego.UserSide=='N')
+		{
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),LOCURA.locuraGuardar[1].y,LOCURA.locuraGuardar[1].x)),PuntoNegro);
+		}else{
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),LOCURA.locuraGuardar[1].y,LOCURA.locuraGuardar[1].x)),PuntoRojo);
+		}
+		return 1;
+	}
+	else if((isJumpableModificado())==1)
+	{
+		tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y]=Juego.UserSide;
+		if(Juego.UserSide=='N')
+		{
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y,LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x)),PuntoNegro);
+		}else{
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y,LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x)),PuntoRojo);
+		}
+		return 0;
+	}
+	return 666;
+}
+
 int checkFicha()
 {
 	if((Juego.UserSide)=='N')
 	{
 		if(tablero[pcActual.x][pcActual.y]=='N')
 		{
+			pcActual.x=i;
+			pcActual.y=j;
 			gtk_label_set_text(GTK_LABEL(LabeldeControl), " Ficha seleccionada\n elija a donde moverla");
 			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i)),EspacioBlanco);
+			return 1;
+		}else{
+			gtk_label_set_text(GTK_LABEL(LabeldeControl), ErrorFicha);
+			return 0;
+		}
+	}else{
+		if((Juego.UserSide)=='R')
+		{
+			if (tablero[pcActual.x][pcActual.y]=='R')
+			{
+				pcActual.x=i;
+				pcActual.y=j;
+				gtk_label_set_text(GTK_LABEL(LabeldeControl), " Ficha seleccianada\n elija a donde moverla");
+				gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i)),EspacioBlanco);
+				return 1;
+			}else{
+				gtk_label_set_text(GTK_LABEL(LabeldeControl), ErrorFicha);
+				return 0;
+			}
+
+		}
+	}
+	return 99;
+}
+
+
+int checkFicha1()
+{
+	if((Juego.UserSide)=='N')
+	{
+		if(tablero[pcActual.x][pcActual.y]=='N')
+		{
+			gtk_label_set_text(GTK_LABEL(LabeldeControl), " Ficha seleccionada\n elija a donde moverla");
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),j,i)),EspacioBlanco);
 			return 1;
 		}else{
 			gtk_label_set_text(GTK_LABEL(LabeldeControl), ErrorFicha);
@@ -579,7 +986,7 @@ int checkFicha()
 			pcActual.x=i;
 			pcActual.y=j;
 			gtk_label_set_text(GTK_LABEL(LabeldeControl), " Ficha seleccianada\n elija a donde moverla");
-			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i)),EspacioBlanco);
+			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego1),j,i)),EspacioBlanco);
 			return 1;
 		}else{
 			gtk_label_set_text(GTK_LABEL(LabeldeControl), ErrorFicha);
@@ -588,30 +995,20 @@ int checkFicha()
 	return 99;
 }
 
-int isJumpableModificado()
-{
-	int coord[4];
-	int result;
-	for(int i =1;i<LOCURA.locuraLongitud;i++){
-
-		coord[0]=LOCURA.locuraGuardar[i-1].x;
-		coord[1]=LOCURA.locuraGuardar[i-1].y;
-		coord[2]=LOCURA.locuraGuardar[i].x;
-		coord[3]=LOCURA.locuraGuardar[i].y;
-
-
-		result=isJumpable(tablero,coord);
-		if(result == FALSE){
-			return FALSE;
-		}
-
-	}
-	return TRUE;
-}
-
 int validar()
 {
 	if(checkFicha()==1 && checkJugada()==1)
+		return 1;
+	else{
+		gtk_label_set_text(GTK_LABEL(LabeldeControl), "Movimiento invalido, seleccione un movimientos valido");
+		return 0;
+	}
+}
+
+
+int validar1()
+{
+	if(checkFicha1()==1 && checkJugada1()==1)
 		return 1;
 	else{
 		gtk_label_set_text(GTK_LABEL(LabeldeControl), "Movimiento invalido, seleccione un movimientos valido");
@@ -630,57 +1027,7 @@ void ClickGrilla (GtkWidget *event_box, GdkEventButton *event, gpointer data)
 	LOCURA.locuraGuardar[LOCURA.locuraLongitud++]=pcActual;
 }
 
-
-void verificarVictoria(){
-
-	if(victoriaRojo() == 2){
-		gtk_label_set_text(GTK_LABEL(LabelVictoria), "Gano USA y perdio URSS\npero siempre gana el amor");
-		gtk_widget_destroy (VentanaJuego);
-		gtk_widget_destroy(VentanaInicio);
-		gtk_widget_show (VentanaVictoria);
-		gtk_widget_destroy (VentanaJuego);
-		gtk_widget_destroy(VentanaInicio);
-
-	}else if(victoriaNegro() == 1){
-		gtk_label_set_text(GTK_LABEL(LabelVictoria), "Gano URSS y perdio USA\npero siempre gana el amor");
-		gtk_widget_destroy (VentanaJuego);
-		gtk_widget_destroy(VentanaInicio);
-		gtk_widget_show (VentanaVictoria);
-		gtk_widget_destroy (VentanaJuego);
-		gtk_widget_hide(VentanaInicio);
-	}
-}
-
-void relacionHoppityTablero(){
-
-	for(int i=0;i<16;i++){
-		for(int j=0;j<16;j++){
-			if(Juego.UserSide=='R'){
-				if(tablero[i][j]=='R')
-					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)), PuntoRojo);
-				else if (tablero[i][j]=='N')
-					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)), PuntoNegro);
-				else
-					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)),EspacioBlanco);
-			}else{
-				if(tablero[i][j]=='R')
-					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)), PuntoNegro);
-				else if (tablero[i][j]=='N')
-					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)), PuntoRojo);
-				else
-					gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),j,i+1)),EspacioBlanco);
-			}
-
-		}
-	}
-	for(int i=0;i<16;i++){
-			gtk_image_set_from_file(GTK_IMAGE(gtk_grid_get_child_at(GTK_GRID(GridJuego),i,0)),EspacioBlanco);
-		}
-	verificarVictoria();
-}
-
-
-void limpiarLocura(){
+void limpiarLocura(){////mirar
 	for(int i=0;i<100;i++){
 		LOCURA.locuraGuardar[i].x=0;
 		LOCURA.locuraGuardar[i].y=0;
@@ -688,74 +1035,106 @@ void limpiarLocura(){
 	LOCURA.locuraLongitud=0;
 }
 
-
-void meOdio(){
-
-	tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y] = '-';
-	tablero[LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x][LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y] = (colorJugador = BLANCO?'R':'N');
-	victoria=(colorJugador = BLANCO?victoriaRojo():victoriaNegro());
-
-	imprimirTablero();
-	turnoActual='M';
+int meOdio(){
+	if(colorJugador==BLANCO){
+		if (tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y] == Juego.UserSide){
+			tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y] = '-';
+			tablero[LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x][LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y] = (colorJugador = BLANCO?'R':'N');
+			victoria=(colorJugador = BLANCO?victoriaRojo():victoriaNegro());
+			imprimirTablero();
+			turnoActual='M';
+			return 1;
+		}else{
+			return 0;
+		}
+	}else{
+		if (colorJugador==NEGRO){
+			if (tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y] != Juego.UserSide){
+				tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y] = '-';
+				tablero[LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x][LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y] = (colorJugador = BLANCO?'R':'N');
+				victoria=(colorJugador = BLANCO?victoriaRojo():victoriaNegro());
+				imprimirTablero();
+				turnoActual='M';
+				return 1;
+			}else{
+				return 0;
+			}
+		}else{
+			return(0);
+		}
+	}
 }
 
-
-
+void BotonEnter1(GtkFileChooserButton *button, gpointer user_data)
+{
+	jugadaPc();
+	lecturadearchivosdelArmagedon();
+	crearMovimiento();
+}
 
 void BotonEnter(GtkFileChooserButton *button, gpointer user_data)
 {
-
 	if(turnoActual == 'P'){
-		if(LOCURA.locuraLongitud<=1){
-			limpiarLocura();
-			relacionHoppityTablero();
-			gtk_label_set_text(GTK_LABEL(LabeldeControl), ErrorMovimiento);
-			gtk_label_set_text(GTK_LABEL(TURNO),(turnoActual=='P')?"TURNO P":"TURNO M");
-			victoria=(colorMaquina = BLANCO?victoriaRojo():victoriaNegro());
-			return;
-		}
-		if(checkadyacente(LOCURA.locuraGuardar[0],LOCURA.locuraGuardar[1]) && LOCURA.locuraLongitud==2){
-
-			meOdio();
-			limpiarLocura();
-			relacionHoppityTablero();
-			gtk_label_set_text(GTK_LABEL(LabeldeControl), "Presione enter para que juegue la maquina");
-			gtk_label_set_text(GTK_LABEL(TURNO),(turnoActual=='P')?"TURNO P":"TURNO M");
-			victoria=(colorMaquina = BLANCO?victoriaRojo():victoriaNegro());
-			return;
-		}else{
-			for(int i=1;i<LOCURA.locuraLongitud;i++){
-				if(checkSalto(LOCURA.locuraGuardar[i-1],LOCURA.locuraGuardar[i])==0){
-					limpiarLocura();
-					relacionHoppityTablero();
-					gtk_label_set_text(GTK_LABEL(LabeldeControl), ErrorMovimiento);
-					gtk_label_set_text(GTK_LABEL(TURNO),(turnoActual=='P')?"TURNO P":"TURNO M");
-					victoria=(colorMaquina = BLANCO?victoriaRojo():victoriaNegro());
+			if(LOCURA.locuraLongitud<=1){
+				limpiarLocura();
+				relacionHoppityTablero();
+				gtk_label_set_text(GTK_LABEL(LabeldeControl), ErrorMovimiento);
+				gtk_label_set_text(GTK_LABEL(TURNO),(turnoActual=='P')?"TURNO Player 1":"TURNO Player 2");
+				victoria=(colorMaquina = BLANCO?victoriaRojo():victoriaNegro());
+				return;
+			}
+			if(checkadyacente(LOCURA.locuraGuardar[0],LOCURA.locuraGuardar[1]) && LOCURA.locuraLongitud==2){
+				if (meOdio()==0){
 					return;
 				}
+				limpiarLocura();
+				relacionHoppityTablero();
+				gtk_label_set_text(GTK_LABEL(LabeldeControl), "Presione enter para que juegue la maquina");
+				gtk_label_set_text(GTK_LABEL(TURNO),(turnoActual=='P')?"TURNO Player 1":"TURNO Player 2");
+				victoria=(colorMaquina = BLANCO?victoriaRojo():victoriaNegro());
+				return;
+			}else{
+				for(int i=1;i<LOCURA.locuraLongitud;i++){
+					if(checkSalto(LOCURA.locuraGuardar[i-1],LOCURA.locuraGuardar[i])==0){
+						if (meOdio()==0){
+							return;
+						}
+						limpiarLocura();
+						relacionHoppityTablero();
+						gtk_label_set_text(GTK_LABEL(LabeldeControl), ErrorMovimiento);
+						gtk_label_set_text(GTK_LABEL(TURNO),(turnoActual=='P')?"TURNO Player 1":"TURNO Player 2");
+						victoria=(colorMaquina = BLANCO?victoriaRojo():victoriaNegro());
+						return;
+					}
+				}
+				if (meOdio()==0){
+					return;
+				}
+				limpiarLocura();
+				relacionHoppityTablero();
+				gtk_label_set_text(GTK_LABEL(LabeldeControl), ErrorMovimiento);//edit
+				gtk_label_set_text(GTK_LABEL(TURNO),(turnoActual=='P')?"TURNO Player 1":"TURNO Player 2");
+				victoria=(colorMaquina = BLANCO?victoriaRojo():victoriaNegro());
 			}
-			meOdio();
-			limpiarLocura();
+		}else{
+			if(Juego.UserSide == 'N' && primeritaVez==1){
+				primeritaVez=0;
+				colorMaquina = 0;
+			}
+			printf("Juega la maquina con el color %s\n",colorJugador == NEGRO?"Blanco":"Negro");
+			jugadaPc();
+			if (Juego.UserSide == 'N' && primeritaVez==0){
+				colorMaquina = 1;
+			}
+			victoria=(colorMaquina = BLANCO?victoriaRojo():victoriaNegro());
+			imprimirTablero();
 			relacionHoppityTablero();
-			gtk_label_set_text(GTK_LABEL(TURNO),(turnoActual=='P')?"TURNO P":"TURNO M");
+			limpiarLocura();
+			gtk_label_set_text(GTK_LABEL(LabeldeControl), "Seleccione una ficha");
+			turnoActual='P';
+			gtk_label_set_text(GTK_LABEL(TURNO),(turnoActual=='P')?"TURNO Player 1":"TURNO Player 2");
 			victoria=(colorMaquina = BLANCO?victoriaRojo():victoriaNegro());
 		}
-	}else{
-		if(Juego.UserSide == 'N' && primeritaVez==1){
-			primeritaVez=0;
-			colorMaquina = !colorMaquina;
-		}
-		printf("Juega la maquina con el color %s\n",colorJugador == NEGRO?"Blanco":"Negro");
-		jugadaPc();
-		victoria=(colorMaquina = BLANCO?victoriaRojo():victoriaNegro());
-		imprimirTablero();
-		relacionHoppityTablero();
-		limpiarLocura();
-		gtk_label_set_text(GTK_LABEL(LabeldeControl), "Seleccione una ficha");
-		turnoActual='P';
-		gtk_label_set_text(GTK_LABEL(TURNO),(turnoActual=='P')?"TURNO P":"TURNO M");
-		victoria=(colorMaquina = BLANCO?victoriaRojo():victoriaNegro());
-	}
 }
 
 #endif /* FUNCIONES_H_ */
