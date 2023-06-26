@@ -1,0 +1,29 @@
+int meOdio(){
+	if(colorJugador==BLANCO){
+		if (tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y] == Juego.UserSide){
+			tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y] = '-';
+			tablero[LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x][LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y] = (colorJugador = BLANCO?'R':'N');
+			victoria=(colorJugador = BLANCO?victoriaRojo():victoriaNegro());
+			imprimirTablero();
+			turnoActual='M';
+			return 1;
+		}else{
+			return 0;
+		}
+	}else{
+		if (colorJugador==NEGRO){
+			if (tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y] != Juego.UserSide){
+				tablero[LOCURA.locuraGuardar[0].x][LOCURA.locuraGuardar[0].y] = '-';
+				tablero[LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].x][LOCURA.locuraGuardar[LOCURA.locuraLongitud-1].y] = (colorJugador = BLANCO?'R':'N');
+				victoria=(colorJugador = BLANCO?victoriaRojo():victoriaNegro());
+				imprimirTablero();
+				turnoActual='M';
+				return 1;
+			}else{
+				return 0;
+			}
+		}else{
+			return(0);
+		}
+	}
+}
