@@ -25,6 +25,7 @@ int main (int argc, char *argv[])
 		VentanaAyuda  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaAyuda"));
 		VentanaBando  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaBando"));
 		VentanaJuego  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaJuego"));
+		VentanaJuegoMaquina = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaJuegoMaquina"));
 		VentanaStats  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaStats"));
 		VentanaSalir  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaSalir"));
 		VentanaBusquedaPartida	= GTK_WIDGET(gtk_builder_get_object(builder,"VentanaBusquedaPartida"));
@@ -93,10 +94,10 @@ int main (int argc, char *argv[])
 		JuegoEnter  = GTK_WIDGET(gtk_builder_get_object(builder,"JuegoEnter"));
 		g_signal_connect (JuegoEnter,"button-press-event",G_CALLBACK(BotonEnter),bandoainicio);
 		HELPJUEGO	= GTK_WIDGET(gtk_builder_get_object(builder,"HELPJUEGO"));
-		g_signal_connect (HELPJUEGO,"button-press-event",G_CALLBACK(CambiarVen),HELPJUEGO);
+		g_signal_connect (HELPJUEGO,"button-press-event",G_CALLBACK(CambiarVen),JuegoAyuda);
 		//Edit Ayuda durante el juego
 		Juegoayuda = GTK_WIDGET(gtk_builder_get_object (builder,"Juegoayuda"));
-		g_signal_connect (Juegoayuda,"button-press-event",G_CALLBACK(CambiarVen),JuegoAyuda);
+		g_signal_connect (Juegoayuda,"button-press-event",G_CALLBACK(CambiarVen),juegoabando);
 		//labels
 		NOMBREJUGADOR = GTK_WIDGET(gtk_builder_get_object(builder,"NOMBREJUGADOR"));
 		LabeldeControl= GTK_WIDGET(gtk_builder_get_object(builder,"LabeldeControl"));
@@ -107,7 +108,26 @@ int main (int argc, char *argv[])
 		EventBox	= GTK_WIDGET(gtk_builder_get_object(builder,"EventBox"));
 		g_signal_connect (EventBox,"button-press-event",G_CALLBACK(ClickGrilla),NULL);
 		GridJuego	= GTK_WIDGET(gtk_builder_get_object(builder,"GridJuego"));
-//
+
+
+		JuegoAtras1	= GTK_WIDGET(gtk_builder_get_object(builder,"JuegoAtras1"));
+		g_signal_connect (JuegoAtras1,"button-press-event",G_CALLBACK(CambiarVen),juegoabando);
+		JuegoEnter1  = GTK_WIDGET(gtk_builder_get_object(builder,"JuegoEnter1"));
+		g_signal_connect (JuegoEnter1,"button-press-event",G_CALLBACK(BotonEnter1),bandoainicio);
+		//Edit Ayuda durante el juego
+		Juegoayuda1 = GTK_WIDGET(gtk_builder_get_object (builder,"Juegoayuda1"));
+		g_signal_connect (Juegoayuda1,"button-press-event",G_CALLBACK(CambiarVen),JuegoAyuda);
+		//labels
+		NOMBREJUGADOR1 = GTK_WIDGET(gtk_builder_get_object(builder,"NOMBREJUGADOR1"));
+		LabeldeControl1= GTK_WIDGET(gtk_builder_get_object(builder,"LabeldeControl1"));
+		NOMBREJUGADOR21= GTK_WIDGET(gtk_builder_get_object(builder,"NOMBREJUGADOR21"));
+		JuegoLabelTurno1= GTK_WIDGET(gtk_builder_get_object(builder,"JuegoLabelTurno1"));
+		TURNO1 		= GTK_WIDGET(gtk_builder_get_object(builder,"TURNO1"));
+		//Grilla
+		EventBox1	= GTK_WIDGET(gtk_builder_get_object(builder,"EventBox1"));
+		g_signal_connect (EventBox1,"button-press-event",G_CALLBACK(ClickGrilla),NULL);
+		GridJuego1	= GTK_WIDGET(gtk_builder_get_object(builder,"GridJuego1"));
+
 	//ventana estadisticas
 		ChooserStats= GTK_WIDGET(gtk_builder_get_object(builder, "ChooserStats"));
 		BotonStats  = GTK_WIDGET(gtk_builder_get_object (builder,"BotonStats"));
@@ -121,17 +141,18 @@ int main (int argc, char *argv[])
 		BotonBusquedaPartida = GTK_WIDGET(gtk_builder_get_object (builder,"BotonBusquedaPartida"));
 		g_signal_connect (BotonBusquedaPartida, "file-set",G_CALLBACK(BuscarPartida),NULL);
 		BotonOkBusquedaPartida = GTK_WIDGET(gtk_builder_get_object (builder,"BotonOkBusquedaPartida"));
-		g_signal_connect (BotonOkBusquedaPartida,"button-press-event",G_CALLBACK(CambiarVen),repoavisitante);
+		g_signal_connect (BotonOkBusquedaPartida,"button-press-event",G_CALLBACK(CambiarVen),33);
 
 	//VentanaVisitante
 		EntryVisitante = GTK_WIDGET(gtk_builder_get_object (builder,"EntryVisitante"));
+		BotonOkVisitante = GTK_WIDGET(gtk_builder_get_object (builder,"BotonOkVisitante"));
+		g_signal_connect (BotonOkBusquedaPartida,"button-press-event",G_CALLBACK(cambiodeventanadelarmagedon1),NULL);
 
 	//VentanaMvM
 		MvMLocal	= GTK_WIDGET(gtk_builder_get_object(builder,"MvMLocal"));
 		g_signal_connect (MvMLocal,"button-press-event",G_CALLBACK(CambiarVen),selecrepo);
 		MvMVisitante= GTK_WIDGET(gtk_builder_get_object(builder,"MvMVisitante"));
-		g_signal_connect (MvMVisitante,"button-press-event",G_CALLBACK(CambiarVenVisitante),selecrepo);
-
+		g_signal_connect (MvMVisitante,"button-press-event",G_CALLBACK(cambiodeventanadelarmagedon),NULL);
 	//VentanaVictoria
 		VentanaVictoria =  GTK_WIDGET(gtk_builder_get_object(builder,"VentanaVictoria"));
 		g_signal_connect (MENU,"button-press-event",G_CALLBACK(CambiarVen),MEN);
@@ -177,14 +198,22 @@ int main (int argc, char *argv[])
 		//ventana juego
 		gtk_button_set_image(GTK_BUTTON(JuegoAtras), gtk_image_new_from_file("src/utilidades/Juego/BACKJUEGO.png"));
 		gtk_button_set_image(GTK_BUTTON(Juegoayuda), gtk_image_new_from_file("src/utilidades/Juego/HELPJUEGO.png"));
+		TABLERO  = GTK_WIDGET(gtk_builder_get_object(builder,"TABLERO"));
+		gtk_image_set_from_file(GTK_IMAGE(TABLERO), "src/utilidades/Juego/Tablero.png");
+
+		//vetana Juego Maquina
+		gtk_button_set_image(GTK_BUTTON(JuegoAtras1), gtk_image_new_from_file("src/utilidades/Juego/BACKJUEGO.png"));
+		gtk_button_set_image(GTK_BUTTON(Juegoayuda1), gtk_image_new_from_file("src/utilidades/Juego/HELPJUEGO.png"));
+		TABLERO1  = GTK_WIDGET(gtk_builder_get_object(builder,"TABLERO1"));
+		gtk_image_set_from_file(GTK_IMAGE(TABLERO1), "src/utilidades/Juego/Tablero.png");
+
+
 
 		//ventana victoria
-		gtk_button_set_image(GTK_BUTTON(BACKWIN), gtk_image_new_from_file("src/utilidades/Juego/BACKJUEGO.png"));
 		FONDOVICTORIA  = GTK_WIDGET(gtk_builder_get_object(builder,"FONDOVICTORIA"));
 		gtk_image_set_from_file(GTK_IMAGE(FONDOVICTORIA), "src/utilidades/Victoria/FONDOVICTORIA.png");
 
-		TABLERO  = GTK_WIDGET(gtk_builder_get_object(builder,"TABLERO"));
-		gtk_image_set_from_file(GTK_IMAGE(TABLERO), "src/utilidades/Juego/Tablero.png");
+
 
 	if ((Estadisticas=fopen(RutaEstadisticas,"r"))==NULL)
 	{
