@@ -1,297 +1,229 @@
-/*
- * Globales.h
- *
- *  Created on: 10 jun. 2023
- *      Author: lp1-2023
- */
+#include "Globales.h"
+#include "Funciones.h"
+#include "IA.h"
 
-#ifndef GLOBALES_H_
-#define GLOBALES_H_
-
-//librerias
-#include <stdlib.h>
-#include <stdio.h>
-#include <gtk/gtk.h>
-#include <time.h>
-#include <math.h>
-#include <stdbool.h>
-
-//defines chetos
-
-#define direccion "src/UwU.glade"
-#define PuntoNegro "src/utilidades/Juego/PuntoNegro.png"
-#define PuntoRojo "src/utilidades/Juego/PuntoRojo.png"
-#define EspacioBlanco "src/utilidades/Juego/EspacioBlanco.png"
-#define RutaEstadisticas "src/Estadisticas"
-#define RutaEstadisticas2 "src/Estadisticasfake"
-#define salir 96
-#define inicioabando1 0
-#define inicioabando2 12
-#define bandoajuego 1
-#define bandoainicio 2
-#define juegoabando 3
-#define inicioastats 4
-#define inicioaayuda 5
-#define ayudaainicio 6
-#define repoabando 7
-#define selecrepo 85
-#define repoavisitante 9
-#define neutral 00
-#define rusia 88
-#define usa 99
-#define pVm 1
-#define mVm 0
-#define ErrorFicha  "Selecciona una ficha de tu equipo"
-#define ErrorMovimiento "Movimiento seleccionado inválido"
-#define FormatoEstadisticas "_%s/%d/%d/%d"//nombre, jugadas, ganadas, perdidas
-#define PERSONA 1
-#define PC 0
-#define NEGRO 0
-#define ROJO 1
-#define JuegoAyuda 7
-#define JuegoAyuda1 73
-#define Loc 44
-#define Mac 55
-#define Al 66
-#define si 11
-#define no 22
-#define BLANCO 1
-#define PERSONA 1
-#define PC 0
-#define N 500
-#define M 100
-#define statsainicio 10
-#define MEN 55
-
-
-#define ESCALAR_SALTOS 100
-#define ESCALAR_PREDIT 50
-
-//utilidad//
-GtkBuilder * builder;
-gchar * RepositorioCompartido;
-gchar * filename;
-gchar * RepositorioCompartidoConfig;
-gchar	EncabezadoEstadiscas[]={"                                    Estadisticas"};
-gchar	StrControlEstadisticas[70];
-gint 	i,j;
-FILE  * Estadisticas;//?????????????????????????????????????????
-FILE  *	archivoConfiguracion=NULL;
-FILE  * archivoJugadas=NULL;
-FILE  * Estadisticas=NULL;
-gint	victoria=1;
-char 	turnoActual;
-int		colorMaquina;
-int		colorJugador;
-int		BanderaLugar[3]={0,0,0};
-char	CadGuardadoStats[100];
-char primeritaVez;
-char tablero [16][16];
-int TPuntajeMaquina[16][16];
-int TPuntajeUsuario[16][16];
-
-struct config{
-	gchar   UserSide;
-	gchar 	MachineSide;
-	gchar 	mod;
-	gchar 	username[20];
-	gchar	machinename[20];
-	gchar   UserTurn;
-	gchar   MachineTurn;
-};
-
-typedef struct config datosJuego;
-datosJuego Juego;
-
-typedef struct coord{
-  int x;
-  int y;
-}coord;
-coord pcActual;
-coord pcSiguiente;
-
-typedef struct aaa{
-	coord locuraGuardar[100];
-	unsigned int locuraLongitud;
-}aaa;
-
-aaa LOCURA;
-
-typedef struct estadisticasJugador
+int main (int argc, char *argv[])
 {
-	int ganadas;
-	int perdidas;
-	int totales;
-	char name[19];
-}StructEstadisticas;
+	guint ret;
+	GError *error = NULL;
+
+	gtk_init (&argc, &argv);
+
+	builder = gtk_builder_new();
+	ret = gtk_builder_add_from_file(builder, direccion, &error);
+	if (ret == 0)
+		{
+			g_print("Error en la función gtk_builder_add_from_file:\n%s", error->message);
+			return 1;
+		}
+	//utilidad
+		tableroInicial();
+		imprimirTablero();
+
+	//asignación de ventanas
+		VentanaInicio = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaInicio"));
+		VentanaAyuda  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaAyuda"));
+		VentanaBando  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaBando"));
+		VentanaJuego  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaJuego"));
+		VentanaJuegoMaquina = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaJuegoMaquina"));
+		VentanaStats  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaStats"));
+		VentanaSalir  = GTK_WIDGET(gtk_builder_get_object(builder,"VentanaSalir"));
+		VentanaBusquedaPartida	= GTK_WIDGET(gtk_builder_get_object(builder,"VentanaBusquedaPartida"));
+		VentanaVisitante	= GTK_WIDGET(gtk_builder_get_object(builder,"VentanaVisitante"));
+		VentanaMvM	= GTK_WIDGET(gtk_builder_get_object(builder,"VentanaMvM"));
 
 
-StructEstadisticas GuardadoStats;
-
-typedef struct string{
-	char* array;
-	unsigned int charsTotales;
-	unsigned int charsUsados;
-}string;
-
-typedef struct siguiente{
-	coord coord[M];
-	char tableroFalso[16][16];
-	int contRuta;
-
-}siguiente;
-
-typedef struct jugada{
-	coord actual;
-	siguiente ruta[N];
-	int puntaje[N];
-	int contRuta;
-
-}salto;
+	//botones para ventana de inicio
+		pvm  		= GTK_WIDGET(gtk_builder_get_object(builder, "pvm"));
+		g_signal_connect (pvm,"button-press-event",G_CALLBACK(CambiarVen),inicioabando1);
+		mvm         = GTK_WIDGET(gtk_builder_get_object (builder,"mvm"));
+		g_signal_connect (mvm,"button-press-event",G_CALLBACK(CambiarVen),inicioabando2);
+		stats       = GTK_WIDGET(gtk_builder_get_object (builder,"stats"));
+		g_signal_connect (stats,"button-press-event",G_CALLBACK(CambiarVen),inicioabando2);
+		SALIR       = GTK_WIDGET(gtk_builder_get_object (builder,"SALIR"));
+		g_signal_connect (SALIR,"button-press-event",G_CALLBACK(CambiarVen),salir);
+		InicioAyuda = GTK_WIDGET(gtk_builder_get_object (builder,"InicioAyuda"));
+		g_signal_connect (InicioAyuda,"button-press-event",G_CALLBACK(CambiarVen),inicioaayuda);
 
 
-//widgets de las ventanas
+	//botones de ventana ayuda
+		AyudaAtras  = GTK_WIDGET (gtk_builder_get_object(builder,"AyudaAtras"));
+		g_signal_connect (AyudaAtras,"button-press-event",G_CALLBACK(CambiarVen),ayudaainicio);
 
-//widgets de VentaAyuda
-GtkWidget * VentanaAyuda;
-GtkWidget * AyudaAtras;
+	//botones de ventana bando
+		//botones de acceso
+		BandoAtras  = GTK_WIDGET(gtk_builder_get_object(builder,"BandoAtras"));
+		g_signal_connect (BandoAtras,"button-press-event",G_CALLBACK(CambiarVen),bandoainicio);
+		Empezar     = GTK_WIDGET(gtk_builder_get_object(builder,"Empezar"));
+		g_signal_connect (Empezar,"button-press-event",G_CALLBACK(CambiarVen),bandoajuego);
 
-//widgets de VentanaBando
-GtkWidget * VentanaBando;
-GtkWidget * america;
-GtkWidget * usrr;
-GtkWidget * Aleatorio;
-GtkWidget * BandoAtras;
-GtkWidget * PlayerName;
-GtkWidget * Empezar;
-GtkWidget * Local;
-GtkWidget * Maquina;
-GtkWidget * AleatorioF;
+		//botones de configuracion
+		america		= GTK_WIDGET(gtk_builder_get_object(builder,"america"));
+		g_signal_connect (america,"button-press-event",G_CALLBACK(SetSide),usa);
+		usrr		= GTK_WIDGET(gtk_builder_get_object(builder,"usrr"));
+		g_signal_connect (usrr,"button-press-event",G_CALLBACK(SetSide),rusia);
+		Aleatorio	= GTK_WIDGET(gtk_builder_get_object(builder,"Aleatorio"));
+		g_signal_connect (Aleatorio,"button-press-event",G_CALLBACK(SetSide),neutral);
+		//Edit botones de seleccion de jugador
+		Local= GTK_WIDGET(gtk_builder_get_object(builder,"Local"));
+		g_signal_connect (Local,"button-press-event",G_CALLBACK(SetTurn),Loc);
+		Maquina= GTK_WIDGET(gtk_builder_get_object(builder,"Maquina"));
+		g_signal_connect (Maquina,"button-press-event",G_CALLBACK(SetTurn),Mac);
+		AleatorioF 	= GTK_WIDGET(gtk_builder_get_object(builder,"AleatorioF"));
+		g_signal_connect (AleatorioF,"button-press-event",G_CALLBACK(SetTurn),Al);
+		//label nombre del jugador
+		PlayerName	= GTK_WIDGET(gtk_builder_get_object(builder,"PlayerName"));
+		gtk_entry_set_max_length (GTK_ENTRY (PlayerName), 19);
 
-//widgets de VentanaInicio
-GtkWidget * VentanaInicio;
-GtkWidget * pvm;
-GtkWidget * mvm;
-GtkWidget * stats;
-GtkWidget * InicioAyuda;
-GtkWidget * SALIR;
+	//Boton de ventana victoria
+		MENU  		= GTK_WIDGET(gtk_builder_get_object(builder, "MENU"));
+		g_signal_connect (MENU,"button-press-event",G_CALLBACK(CambiarVen),BACKWIN);
 
-//widgets de salir
-GtkWidget * sii;//Edit
-GtkWidget * noo;//Edit
+	//ventana salir
+		//Edit botones para ventana de juego
+		sii  		= GTK_WIDGET(gtk_builder_get_object(builder, "si"));
+		g_signal_connect (sii,"button-press-event",G_CALLBACK(CambiarVen),si);
+		//botones para ventana de inicio
+		noo  		= GTK_WIDGET(gtk_builder_get_object(builder, "no"));
+		g_signal_connect (noo,"button-press-event",G_CALLBACK(CambiarVen),no);
 
-//widgets de VentaJuego
-GtkWidget * VentanaJuego;
-GtkWidget * JuegoAtras;
-GtkWidget * LabeldeControl;
-GtkWidget * NOMBREJUGADOR;
-GtkWidget * NOMBREJUGADOR2;
-GtkWidget * PUNTOSPLAYER;
-GtkWidget * PUNTOSMAQUINA;
-GtkWidget * GridJuego;
-GtkWidget * EventBox;
-GtkWidget * VentanaSalir;
-GtkWidget * Juegoayuda;
-GtkWidget * JuegoLabelTurno;
-GtkWidget * JuegoEnter;
-GtkWidget * TURNO;
-
-//widgets de ventanajuegomaquina
-GtkWidget * VentanaJuegoMaquina;
-GtkWidget * JuegoAtras1;
-GtkWidget * LabeldeControl1;
-GtkWidget * NOMBREJUGADOR1;
-GtkWidget * NOMBREJUGADOR21;
-GtkWidget * PUNTOSPLAYER1;
-GtkWidget * PUNTOSMAQUINA1;
-GtkWidget * GridJuego1;
-GtkWidget * EventBox1;
-GtkWidget * VentanaSalir1;
-GtkWidget * Juegoayuda1;
-GtkWidget * JuegoLabelTurno1;
-GtkWidget * JuegoEnter1;
-GtkWidget * TURNO1;
-GtkWidget * TABLERO1;
-
-
+	//ventana juego
+		//botones
+		JuegoAtras	= GTK_WIDGET(gtk_builder_get_object(builder,"JuegoAtras"));
+		g_signal_connect (JuegoAtras,"button-press-event",G_CALLBACK(CambiarVen),juegoabando);
+		JuegoEnter  = GTK_WIDGET(gtk_builder_get_object(builder,"JuegoEnter"));
+		g_signal_connect (JuegoEnter,"button-press-event",G_CALLBACK(BotonEnter),bandoainicio);
+		HELPJUEGO	= GTK_WIDGET(gtk_builder_get_object(builder,"HELPJUEGO"));
+		g_signal_connect (HELPJUEGO,"button-press-event",G_CALLBACK(CambiarVen),JuegoAyuda);
+		//Edit Ayuda durante el juego
+		Juegoayuda = GTK_WIDGET(gtk_builder_get_object (builder,"Juegoayuda"));
+		g_signal_connect (Juegoayuda,"button-press-event",G_CALLBACK(CambiarVen),juegoabando);
+		//labels
+		NOMBREJUGADOR = GTK_WIDGET(gtk_builder_get_object(builder,"NOMBREJUGADOR"));
+		LabeldeControl= GTK_WIDGET(gtk_builder_get_object(builder,"LabeldeControl"));
+		NOMBREJUGADOR2= GTK_WIDGET(gtk_builder_get_object(builder,"NOMBREJUGADOR2"));
+		JuegoLabelTurno= GTK_WIDGET(gtk_builder_get_object(builder,"JuegoLabelTurno"));
+		TURNO 		= GTK_WIDGET(gtk_builder_get_object(builder,"TURNO"));
+		//Grilla
+		EventBox	= GTK_WIDGET(gtk_builder_get_object(builder,"EventBox"));
+		g_signal_connect (EventBox,"button-press-event",G_CALLBACK(ClickGrilla),NULL);
+		GridJuego	= GTK_WIDGET(gtk_builder_get_object(builder,"GridJuego"));
 
 
-//widgets de VentanaStats
-GtkWidget * VentanaStats;
-GtkWidget * ChooserStats;
-GtkWidget * BotonStats;
-GtkWidget * TextoStats;
+		JuegoAtras1	= GTK_WIDGET(gtk_builder_get_object(builder,"JuegoAtras1"));
+		g_signal_connect (JuegoAtras1,"button-press-event",G_CALLBACK(CambiarVen),juegoabando);
+		JuegoEnter1  = GTK_WIDGET(gtk_builder_get_object(builder,"JuegoEnter1"));
+		g_signal_connect (JuegoEnter1,"button-press-event",G_CALLBACK(BotonEnter1),bandoainicio);
+		//Edit Ayuda durante el juego
+		Juegoayuda1 = GTK_WIDGET(gtk_builder_get_object (builder,"Juegoayuda1"));
+		g_signal_connect (Juegoayuda1,"button-press-event",G_CALLBACK(CambiarVen),JuegoAyuda);
+		//labels
+		NOMBREJUGADOR1 = GTK_WIDGET(gtk_builder_get_object(builder,"NOMBREJUGADOR1"));
+		LabeldeControl1= GTK_WIDGET(gtk_builder_get_object(builder,"LabeldeControl1"));
+		NOMBREJUGADOR21= GTK_WIDGET(gtk_builder_get_object(builder,"NOMBREJUGADOR21"));
+		JuegoLabelTurno1= GTK_WIDGET(gtk_builder_get_object(builder,"JuegoLabelTurno1"));
+		TURNO1 		= GTK_WIDGET(gtk_builder_get_object(builder,"TURNO1"));
+		//Grilla
+		EventBox1	= GTK_WIDGET(gtk_builder_get_object(builder,"EventBox1"));
+		g_signal_connect (EventBox1,"button-press-event",G_CALLBACK(ClickGrilla),NULL);
+		GridJuego1	= GTK_WIDGET(gtk_builder_get_object(builder,"GridJuego1"));
 
-//widgets de VentanaBusquedaPartida
-GtkWidget * VentanaBusquedaPartida;
-GtkWidget * BotonBusquedaPartida;
-GtkWidget * BotonOkBusquedaPartida;
+	//ventana estadisticas
+		ChooserStats= GTK_WIDGET(gtk_builder_get_object(builder, "ChooserStats"));
+		BotonStats  = GTK_WIDGET(gtk_builder_get_object (builder,"BotonStats"));
+		TextoStats	= GTK_WIDGET(gtk_builder_get_object(builder,"TextoStats"));
+		gtk_text_view_set_editable(GTK_TEXT_VIEW(TextoStats), FALSE);
+		//señales
+		g_signal_connect (ChooserStats, "file-set",G_CALLBACK(guardar),NULL);
+		g_signal_connect (BotonStats, "button-press-event",G_CALLBACK(CambiarVen),statsainicio);
 
-//widgets de VentanaVisitante
-GtkWidget * VentanaVisitante;
-GtkWidget * EntryVisitante;
-GtkWidget * BotonOkVisitante;
+	//VentanaBusquedaPartida
+		BotonBusquedaPartida = GTK_WIDGET(gtk_builder_get_object (builder,"BotonBusquedaPartida"));
+		g_signal_connect (BotonBusquedaPartida, "file-set",G_CALLBACK(BuscarPartida),NULL);
+		BotonOkBusquedaPartida = GTK_WIDGET(gtk_builder_get_object (builder,"BotonOkBusquedaPartida"));
+		g_signal_connect (BotonOkBusquedaPartida,"button-press-event",G_CALLBACK(CambiarVen),33);
 
+	//VentanaVisitante
+		EntryVisitante = GTK_WIDGET(gtk_builder_get_object (builder,"EntryVisitante"));
+		BotonOkVisitante = GTK_WIDGET(gtk_builder_get_object (builder,"BotonOkVisitante"));
+		g_signal_connect (BotonOkBusquedaPartida,"button-press-event",G_CALLBACK(cambiodeventanadelarmagedon1),NULL);
 
-//widgets de VentanaMvM
-GtkWidget * VentanaMvM;
-GtkWidget * MvMLocal;
-GtkWidget * MvMVisitante;
+	//VentanaMvM
+		MvMLocal	= GTK_WIDGET(gtk_builder_get_object(builder,"MvMLocal"));
+		g_signal_connect (MvMLocal,"button-press-event",G_CALLBACK(CambiarVen),selecrepo);
+		MvMVisitante= GTK_WIDGET(gtk_builder_get_object(builder,"MvMVisitante"));
+		g_signal_connect (MvMVisitante,"button-press-event",G_CALLBACK(cambiodeventanadelarmagedon),NULL);
+	//VentanaVictoria
+		VentanaVictoria =  GTK_WIDGET(gtk_builder_get_object(builder,"VentanaVictoria"));
+		g_signal_connect (MENU,"button-press-event",G_CALLBACK(CambiarVen),MEN);
+		LabelVictoria = GTK_WIDGET(gtk_builder_get_object(builder,"LabelVictoria"));
 
-//widgets de VentanaVictoria
-GtkWidget * VentanaVictoria;
-GtkWidget * MENU;
-GtkWidget * LabelVictoria;
+	//imganes
 
-//widgets imagenes
+		//Inicio
+		gtk_button_set_image(GTK_BUTTON(pvm), gtk_image_new_from_file("src/utilidades/Inicio/PLAYERVSPC.png"));
+		gtk_button_set_image(GTK_BUTTON(mvm), gtk_image_new_from_file("src/utilidades/Inicio/PCVSPC.png"));
+		gtk_button_set_image(GTK_BUTTON(stats), gtk_image_new_from_file("src/utilidades/Inicio/STATS.png"));
+		gtk_button_set_image(GTK_BUTTON(InicioAyuda), gtk_image_new_from_file("src/utilidades/Inicio/HELPINICIO.png"));
+		gtk_button_set_image(GTK_BUTTON(SALIR), gtk_image_new_from_file("src/utilidades/Inicio/sal.png"));
+		HOPPITY  = GTK_WIDGET(gtk_builder_get_object(builder,"HOPPITY"));
+		gtk_image_set_from_file(GTK_IMAGE(HOPPITY), "src/utilidades/Inicio/HOPPITY.png");
+		COLDWAR  = GTK_WIDGET(gtk_builder_get_object(builder,"COLDWAR"));
+		gtk_image_set_from_file(GTK_IMAGE(COLDWAR), "src/utilidades/Inicio/COLDWAR.png");
+		FONDOINICIO  = GTK_WIDGET(gtk_builder_get_object(builder,"FONDOINICIO"));
+		gtk_image_set_from_file(GTK_IMAGE(FONDOINICIO), "src/utilidades/Inicio/FONDOINICIO.png");
 
-//Victoria
+		sal  = GTK_WIDGET(gtk_builder_get_object(builder,"sal"));
+		gtk_image_set_from_file(GTK_IMAGE(sal), "src/utilidades/sal.png");
 
-GtkWidget * FONDOVICTORIA;
-GtkWidget * BACKWIN;
-
-
-//inicio
-GtkWidget * PLAYERVSPC;
-GtkWidget * PCVSPC;
-GtkWidget * STATS;
-GtkWidget * HELPINICIO;
-GtkWidget * HOPPITY;
-GtkWidget * COLDWAR;
-GtkWidget * FONDOINICIO;
-GtkWidget * sal;
-
-//Bando
-GtkWidget * FONDOBANDO;
-GtkWidget * BACKBANDO;
-GtkWidget * RANDOM1;
-GtkWidget * RANDOM2;
-GtkWidget * START;
-GtkWidget * USA;
-GtkWidget * URRS;
-GtkWidget * PCJUEGO;
-GtkWidget * PLAYER;
-GtkWidget * PLAYERNAME;
-GtkWidget * CHOSESIDE;
-GtkWidget * INICIO;
-
-//Juego
-GtkWidget * BACKJUEGO;
-GtkWidget * HELPJUEGO;
-GtkWidget * PLAYER1;
-GtkWidget * PLAYER2;
-GtkWidget * TABLERO;
-GtkWidget * FICHAUSA;
-GtkWidget * FICHAURRS;
-
-//salir
-GtkWidget * SI;
-GtkWidget * NO;
-GtkWidget * SEGURO;
-
-//victoria
-GtkWidget * VentanaVictoria;
-GtkWidget * BACKWIN;
+		//ventana bando
+		gtk_button_set_image(GTK_BUTTON(BandoAtras), gtk_image_new_from_file("src/utilidades/Bando/BACKBANDO.png"));
+		gtk_button_set_image(GTK_BUTTON(AleatorioF), gtk_image_new_from_file("src/utilidades/Bando/RANDOM.png"));
+		gtk_button_set_image(GTK_BUTTON(Aleatorio), gtk_image_new_from_file("src/utilidades/Bando/RANDOM.png"));
+		gtk_button_set_image(GTK_BUTTON(Empezar), gtk_image_new_from_file("src/utilidades/Bando/START.png"));
+		gtk_button_set_image(GTK_BUTTON(america), gtk_image_new_from_file("src/utilidades/Bando/USA.png"));
+		gtk_button_set_image(GTK_BUTTON(usrr), gtk_image_new_from_file("src/utilidades/Bando/URRS.png"));
+		gtk_button_set_image(GTK_BUTTON(Maquina), gtk_image_new_from_file("src/utilidades/Bando/PC.png"));
+		gtk_button_set_image(GTK_BUTTON(Local), gtk_image_new_from_file("src/utilidades/Bando/PLAYER.png"));
+		FONDOBANDO  = GTK_WIDGET(gtk_builder_get_object(builder,"FONDOBANDO"));
+		gtk_image_set_from_file(GTK_IMAGE(FONDOBANDO), "src/utilidades/Bando/FONDOBANDO.png");
+		CHOSESIDE  = GTK_WIDGET(gtk_builder_get_object(builder,"CHOSESIDE"));
+		gtk_image_set_from_file(GTK_IMAGE(CHOSESIDE), "src/utilidades/Bando/CHOSESIDE.png");
+		INICIO  = GTK_WIDGET(gtk_builder_get_object(builder,"INICIO"));
+		gtk_image_set_from_file(GTK_IMAGE(INICIO), "src/utilidades/Bando/WHOSTARS.png");
+		PLAYERNAME  = GTK_WIDGET(gtk_builder_get_object(builder,"PLAYERNAME"));
+		gtk_image_set_from_file(GTK_IMAGE(PLAYERNAME), "src/utilidades/Bando/PLAYERNAME.png");
 
 
-#endif /* GLOBALES_H_ */
+		//ventana juego
+		gtk_button_set_image(GTK_BUTTON(JuegoAtras), gtk_image_new_from_file("src/utilidades/Juego/BACKJUEGO.png"));
+		gtk_button_set_image(GTK_BUTTON(Juegoayuda), gtk_image_new_from_file("src/utilidades/Juego/HELPJUEGO.png"));
+		TABLERO  = GTK_WIDGET(gtk_builder_get_object(builder,"TABLERO"));
+		gtk_image_set_from_file(GTK_IMAGE(TABLERO), "src/utilidades/Juego/Tablero.png");
+
+		//vetana Juego Maquina
+		gtk_button_set_image(GTK_BUTTON(JuegoAtras1), gtk_image_new_from_file("src/utilidades/Juego/BACKJUEGO.png"));
+		gtk_button_set_image(GTK_BUTTON(Juegoayuda1), gtk_image_new_from_file("src/utilidades/Juego/HELPJUEGO.png"));
+		TABLERO1  = GTK_WIDGET(gtk_builder_get_object(builder,"TABLERO1"));
+		gtk_image_set_from_file(GTK_IMAGE(TABLERO1), "src/utilidades/Juego/Tablero.png");
+
+
+
+		//ventana victoria
+		FONDOVICTORIA  = GTK_WIDGET(gtk_builder_get_object(builder,"FONDOVICTORIA"));
+		gtk_image_set_from_file(GTK_IMAGE(FONDOVICTORIA), "src/utilidades/Victoria/FONDOVICTORIA.png");
+
+
+
+	if ((Estadisticas=fopen(RutaEstadisticas,"r"))==NULL)
+	{
+		Estadisticas=fopen(RutaEstadisticas,"w");
+		fwrite(EncabezadoEstadiscas,1,strlen(EncabezadoEstadiscas),Estadisticas);
+		fclose(Estadisticas);
+	}
+	gtk_widget_show_all (VentanaInicio);
+
+	gtk_main();
+
+	return 0;
+}
